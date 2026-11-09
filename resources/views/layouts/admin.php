@@ -386,6 +386,13 @@
         <span class="nav-label">Dashboard</span>
     </a>
 
+    <a href="<?= url('/orders') ?>" class="android-nav-item text-decoration-none <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">
+        <div class="nav-icon-pill">
+            <i class="bi bi-receipt"></i>
+        </div>
+        <span class="nav-label">Pesanan</span>
+    </a>
+
     <?php if (\App\Core\Auth::hasPermission('pos.access')): ?>
     <a href="<?= url('/pos') ?>" class="android-nav-item text-decoration-none <?= ($activeMenu ?? '') === 'pos' ? 'active' : '' ?>">
         <div class="center-fab">
@@ -394,13 +401,6 @@
         <span class="nav-label">Kasir POS</span>
     </a>
     <?php endif; ?>
-
-    <a href="<?= url('/orders') ?>" class="android-nav-item text-decoration-none <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">
-        <div class="nav-icon-pill">
-            <i class="bi bi-receipt"></i>
-        </div>
-        <span class="nav-label">Pesanan</span>
-    </a>
 
     <?php if (\App\Core\Auth::hasPermission('production.access')): ?>
     <a href="<?= url('/production') ?>" class="android-nav-item text-decoration-none <?= ($activeMenu ?? '') === 'production' ? 'active' : '' ?>">
