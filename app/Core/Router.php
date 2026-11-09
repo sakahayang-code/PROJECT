@@ -99,8 +99,10 @@ class Router
             $method = strtoupper($_POST['_method']);
         }
 
+        $matchMethod = $method === 'HEAD' ? 'GET' : $method;
+
         foreach (self::$routes as $route) {
-            if ($route['method'] !== $method) {
+            if ($route['method'] !== $matchMethod) {
                 continue;
             }
 
