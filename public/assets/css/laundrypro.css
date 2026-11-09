@@ -326,3 +326,162 @@ body {
     font-size: 12px;
     line-height: 1.4;
 }
+
+/* ==========================================================================
+   Android Bottom Navigation & PWA Install Banner
+   ========================================================================== */
+.android-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--lp-border-color);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 1040;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.android-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    color: var(--lp-text-muted);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+    background: transparent;
+    border: none;
+    padding: 6px 2px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.android-nav-item i {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-bottom: 3px;
+    transition: transform 0.15s ease;
+}
+
+.android-nav-item:hover,
+.android-nav-item:active,
+.android-nav-item.active {
+    color: var(--lp-primary);
+    font-weight: 600;
+}
+
+.android-nav-item.active i {
+    transform: scale(1.15);
+}
+
+.android-nav-item .center-action-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--lp-primary) 0%, var(--lp-primary-dark) 100%);
+    color: #ffffff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -18px;
+    box-shadow: 0 4px 12px rgba(19, 175, 168, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.android-nav-item:active .center-action-btn {
+    transform: scale(0.92);
+}
+
+.android-nav-item .center-action-btn i {
+    font-size: 1.4rem;
+    margin-bottom: 0;
+    color: #ffffff !important;
+}
+
+/* PWA Install Floating Notification Banner */
+.pwa-install-banner {
+    position: fixed;
+    bottom: 74px;
+    left: 12px;
+    right: 12px;
+    max-width: 440px;
+    margin: 0 auto;
+    z-index: 1050;
+    animation: pwaSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pwaSlideUp {
+    from {
+        transform: translateY(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.pwa-install-banner .card {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--lp-border-color);
+    background: var(--lp-card-bg);
+}
+
+/* Responsive adjustment on mobile when bottom nav is present */
+@media (max-width: 991.98px) {
+    body {
+        padding-bottom: 68px;
+    }
+    .app-content {
+        padding-bottom: 2rem;
+    }
+    .portal-footer {
+        margin-bottom: 64px;
+    }
+}
+
+@media (min-width: 992px) {
+    .android-bottom-nav {
+        display: none !important;
+    }
+    .pwa-install-banner {
+        bottom: 24px;
+        right: 24px;
+        left: auto;
+        margin: 0;
+        max-width: 380px;
+    }
+}
+
+/* Dark theme overrides for Android Nav & PWA Banner */
+[data-bs-theme="dark"] .android-bottom-nav {
+    background: rgba(17, 24, 39, 0.95);
+    border-top-color: #1F3252;
+}
+
+[data-bs-theme="dark"] .android-nav-item {
+    color: #94A3B8;
+}
+
+[data-bs-theme="dark"] .android-nav-item.active {
+    color: var(--lp-primary);
+}
+
+[data-bs-theme="dark"] .pwa-install-banner .card {
+    background: #152238;
+    border-color: #1F3252;
+}
+

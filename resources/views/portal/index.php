@@ -67,6 +67,28 @@
     </div>
 </div>
 
+<!-- Android PWA App Quick Banner -->
+<div class="card border-0 bg-primary-subtle-custom mb-4 overflow-hidden shadow-sm">
+    <div class="card-body p-3 p-md-4">
+        <div class="row align-items-center g-3">
+            <div class="col-12 col-md-8 d-flex align-items-center gap-3">
+                <div class="bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px;">
+                    <i class="bi bi-android2 fs-3"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1 text-dark">Pasang Aplikasi SimLaundry di Android</h6>
+                    <p class="text-muted small mb-0">Pesan penjemputan lebih praktis, terima notifikasi status cuci, dan cek poin langsung dari layar utama HP Anda.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 text-md-end">
+                <button type="button" class="btn btn-primary fw-bold shadow-sm px-4 py-2" onclick="SimLaundry.promptInstall()">
+                    <i class="bi bi-download me-1"></i> Download / Install
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Active Orders Section -->
 <div class="row g-4 mb-4">
     <div class="col-12 col-lg-8">

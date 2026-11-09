@@ -2,6 +2,8 @@
  * LaundryPro Main JavaScript
  */
 
+let deferredInstallPrompt = null;
+
 window.LaundryPro = {
     csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
 
@@ -10,6 +12,79 @@ window.LaundryPro = {
         this.initSidebar();
         this.initTooltips();
         this.initAutoDismissAlerts();
+        this.initPwaInstall();
+    },
+
+    initPwaInstall() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (isStandalone) {
+            return;
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+
+            const dismissedUntil = localStorage.getItem('simlaundry_pwa_dismissed');
+            if (dismissedUntil && Date.now() < parseInt(dismissedUntil, 10)) {
+                return;
+            }
+
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) {
+                banner.classList.remove('d-none');
+            }
+            document.querySelectorAll('.pwa-install-btn').forEach(btn => btn.classList.remove('d-none'));
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) banner.classList.add('d-none');
+            document.querySelectorAll('.pwa-install-btn').forEach(btn => btn.classList.add('d-none'));
+            this.toast('Aplikasi SimLaundry berhasil terpasang di HP Anda!', 'success');
+        });
+
+        // Tampilkan banner setelah jeda untuk pengguna perangkat bergerak
+        setTimeout(() => {
+            const dismissedUntil = localStorage.getItem('simlaundry_pwa_dismissed');
+            if (!dismissedUntil || Date.now() > parseInt(dismissedUntil, 10)) {
+                const banner = document.getElementById('pwaInstallBanner');
+                if (banner && banner.classList.contains('d-none') && !isStandalone) {
+                    if (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
+                        banner.classList.remove('d-none');
+                    }
+                }
+            }
+        }, 2500);
+    },
+
+    async promptInstall() {
+        if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            if (outcome === 'accepted') {
+                this.toast('Memasang aplikasi SimLaundry...', 'info');
+                const banner = document.getElementById('pwaInstallBanner');
+                if (banner) banner.classList.add('d-none');
+            }
+            deferredInstallPrompt = null;
+        } else {
+            const modalEl = document.getElementById('pwaGuideModal');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            } else {
+                this.toast('Buka menu browser Anda (titik 3 di pojok atas) lalu pilih "Tambahkan ke Layar Utama" / "Install Aplikasi".', 'info');
+            }
+        }
+    },
+
+    dismissInstallBanner() {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) banner.classList.add('d-none');
+        // Dismiss for 3 days
+        localStorage.setItem('simlaundry_pwa_dismissed', Date.now() + (3 * 24 * 60 * 60 * 1000));
     },
 
     initTheme() {

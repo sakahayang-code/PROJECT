@@ -197,6 +197,12 @@
 
             <!-- Topbar Actions & User Profile -->
             <div class="d-flex align-items-center gap-2">
+                <!-- Tombol Download / Pasang App Android -->
+                <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 rounded-pill px-2 py-1 shadow-sm" onclick="SimLaundry.promptInstall()" title="Download & Pasang Aplikasi Android">
+                    <i class="bi bi-android2 fs-6"></i>
+                    <span class="d-none d-sm-inline small fw-semibold">App Android</span>
+                </button>
+
                 <!-- Theme toggle button -->
                 <button type="button" class="btn btn-sm btn-light border rounded-circle p-2" id="themeToggleBtn" title="Ganti Tema">
                     <i class="bi bi-moon-stars-fill"></i>
@@ -250,6 +256,133 @@
 
             <?= $content ?? '' ?>
         </main>
+    </div>
+</div>
+
+<!-- Navigasi Bawah Android (Mobile & Tablet) -->
+<nav class="android-bottom-nav d-lg-none" aria-label="Navigasi Bawah Android">
+    <a href="<?= url('/dashboard') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <?php if (\App\Core\Auth::hasPermission('pos.access')): ?>
+    <a href="<?= url('/pos') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'pos' ? 'active' : '' ?>">
+        <div class="center-action-btn">
+            <i class="bi bi-cart-check-fill"></i>
+        </div>
+        <span>Kasir POS</span>
+    </a>
+    <?php endif; ?>
+
+    <a href="<?= url('/orders') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">
+        <i class="bi bi-receipt"></i>
+        <span>Pesanan</span>
+    </a>
+
+    <?php if (\App\Core\Auth::hasPermission('production.access')): ?>
+    <a href="<?= url('/production') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'production' ? 'active' : '' ?>">
+        <i class="bi bi-diagram-3-fill"></i>
+        <span>Produksi</span>
+    </a>
+    <?php elseif (\App\Core\Auth::hasPermission('delivery.access')): ?>
+    <a href="<?= url('/delivery') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'delivery' ? 'active' : '' ?>">
+        <i class="bi bi-truck"></i>
+        <span>Kurir</span>
+    </a>
+    <?php else: ?>
+    <a href="<?= url('/customers') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'customers' ? 'active' : '' ?>">
+        <i class="bi bi-people-fill"></i>
+        <span>Pelanggan</span>
+    </a>
+    <?php endif; ?>
+
+    <button type="button" class="android-nav-item" id="mobileBottomMenuBtn" onclick="document.getElementById('sidebarToggleBtn')?.click()">
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+        <span>Menu</span>
+    </button>
+</nav>
+
+<!-- Notifikasi Mengambang Download / Install PWA Android -->
+<div id="pwaInstallBanner" class="pwa-install-banner d-none" role="alert" aria-live="polite">
+    <div class="card shadow-lg border-0 overflow-hidden">
+        <div class="card-body p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-3 shadow-sm bg-white p-1 flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                    <img src="<?= asset('img/icon-192.png') ?>" alt="SimLaundry" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div class="flex-grow-1 min-w-0">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.95rem;">Install SimLaundry</h6>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.65rem;">Android App</span>
+                    </div>
+                    <p class="text-muted small mb-0" style="font-size: 0.78rem; line-height: 1.25;">
+                        Akses lebih cepat, ringan, dan langsung dibuka dari layar utama HP Android Anda.
+                    </p>
+                </div>
+                <button type="button" class="btn-close btn-sm align-self-start" onclick="SimLaundry.dismissInstallBanner()" aria-label="Tutup"></button>
+            </div>
+            <div class="d-flex align-items-center justify-content-end gap-2 mt-3 pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-light border text-muted px-3" onclick="SimLaundry.dismissInstallBanner()">
+                    Nanti Saja
+                </button>
+                <button type="button" class="btn btn-sm btn-primary px-3 d-flex align-items-center gap-1 shadow-sm" onclick="SimLaundry.promptInstall()">
+                    <i class="bi bi-android2 fs-6"></i>
+                    <span class="fw-bold">Download / Install</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Panduan Install PWA Android -->
+<div class="modal fade" id="pwaGuideModal" tabindex="-1" aria-labelledby="pwaGuideModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom-0 pb-0">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <i class="bi bi-android2 fs-5"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold" id="pwaGuideModalLabel">Install SimLaundry di Android</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <div class="text-center mb-3">
+                    <img src="<?= asset('img/logo.png') ?>" alt="SimLaundry Logo" style="height: 60px;">
+                    <p class="text-muted small mt-2">Aplikasi PWA SimLaundry dapat dipasang langsung di HP Android tanpa memakan kuota/memori besar.</p>
+                </div>
+                <div class="list-group list-group-flush border rounded-3 mb-3">
+                    <div class="list-group-item d-flex align-items-start gap-3 py-3">
+                        <span class="badge bg-primary rounded-circle p-2 fs-6" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">1</span>
+                        <div>
+                            <div class="fw-bold small">Buka Menu Browser Chrome</div>
+                            <div class="text-muted small">Tekan tombol ikon titik tiga (<strong>&vellip;</strong>) di pojok kanan atas atau bawah layar browser Anda.</div>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-start gap-3 py-3">
+                        <span class="badge bg-primary rounded-circle p-2 fs-6" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">2</span>
+                        <div>
+                            <div class="fw-bold small">Pilih "Install Aplikasi" atau "Tambahkan ke Layar Utama"</div>
+                            <div class="text-muted small">Pilih menu <em>"Install app"</em> atau <em>"Add to Home screen"</em> pada daftar menu.</div>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-start gap-3 py-3">
+                        <span class="badge bg-primary rounded-circle p-2 fs-6" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">3</span>
+                        <div>
+                            <div class="fw-bold small">Konfirmasi Pasang & Selesai</div>
+                            <div class="text-muted small">Ikon SimLaundry otomatis hadir di beranda HP Anda, siap digunakan kapan saja seperti aplikasi Android resmi.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-primary w-100 fw-bold" data-bs-dismiss="modal">
+                    Saya Mengerti
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
