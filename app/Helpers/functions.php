@@ -52,16 +52,19 @@ if (!function_exists('url')) {
     }
 }
 
-if (!function_exists('asset')) {
-    function asset(string $path = ''): string {
-        return url('assets/' . ltrim($path, '/'));
-    }
-}
-
 if (!function_exists('base_path')) {
     function base_path(string $path = ''): string {
         $root = dirname(__DIR__, 2);
         return $path === '' ? $root : $root . '/' . ltrim($path, '/');
+    }
+}
+
+if (!function_exists('asset')) {
+    function asset(string $path = ''): string {
+        $clean = ltrim($path, '/');
+        $fullPath = base_path('public/assets/' . $clean);
+        $v = file_exists($fullPath) ? (string)filemtime($fullPath) : '1';
+        return url('assets/' . $clean) . '?v=' . $v;
     }
 }
 

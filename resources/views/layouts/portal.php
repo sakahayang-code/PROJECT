@@ -29,6 +29,104 @@
             padding: 2rem 0;
             margin-top: auto;
         }
+
+        /* Critical Native Android Navigation Bar Fallback */
+        .android-bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 68px !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-around !important;
+            z-index: 1040 !important;
+            padding: 4px 8px env(safe-area-inset-bottom, 4px) !important;
+        }
+        .android-nav-item {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex: 1 !important;
+            height: 100% !important;
+            color: #64748B !important;
+            text-decoration: none !important;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            padding: 2px !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            box-shadow: none !important;
+        }
+        .android-nav-item:active {
+            transform: scale(0.92);
+        }
+        .android-nav-item .nav-icon-pill {
+            width: 52px;
+            height: 30px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2px;
+            transition: all 0.25s ease;
+        }
+        .android-nav-item .nav-icon-pill i {
+            font-size: 1.25rem;
+            line-height: 1;
+            color: inherit;
+        }
+        .android-nav-item .nav-label {
+            font-size: 10.5px !important;
+            font-weight: 500 !important;
+            color: #64748B !important;
+            line-height: 1 !important;
+        }
+        .android-nav-item.active .nav-icon-pill {
+            background-color: rgba(19, 175, 168, 0.18) !important;
+            color: #13AFA8 !important;
+        }
+        .android-nav-item.active .nav-icon-pill i {
+            color: #13AFA8 !important;
+        }
+        .android-nav-item.active .nav-label {
+            color: #13AFA8 !important;
+            font-weight: 700 !important;
+        }
+        .android-nav-item .center-fab {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 16px !important;
+            background: linear-gradient(135deg, #13AFA8 0%, #0B817C 100%) !important;
+            color: #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin-top: -18px !important;
+            box-shadow: 0 6px 16px rgba(19, 175, 168, 0.45) !important;
+        }
+        .android-nav-item .center-fab i {
+            font-size: 1.45rem !important;
+            color: #ffffff !important;
+        }
+        @media (min-width: 992px) {
+            .android-bottom-nav {
+                display: none !important;
+            }
+        }
+        @media (max-width: 991.98px) {
+            body {
+                padding-bottom: 76px !important;
+            }
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -86,28 +184,28 @@
 
 <!-- Navigasi Bawah Android Pelanggan Material 3 (Mobile) -->
 <nav class="android-bottom-nav d-lg-none" aria-label="Navigasi Bawah Android">
-    <a href="<?= url('/portal') ?>" class="android-nav-item <?= !str_contains($_SERVER['REQUEST_URI'] ?? '', 'my-orders') && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'create-order') && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'profile') ? 'active' : '' ?>">
+    <a href="<?= url('/portal') ?>" class="android-nav-item text-decoration-none <?= !str_contains($_SERVER['REQUEST_URI'] ?? '', 'my-orders') && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'create-order') && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'profile') ? 'active' : '' ?>">
         <div class="nav-icon-pill">
             <i class="bi bi-house-door-fill"></i>
         </div>
         <span class="nav-label">Beranda</span>
     </a>
 
-    <a href="<?= url('/portal/my-orders') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'my-orders') ? 'active' : '' ?>">
+    <a href="<?= url('/portal/my-orders') ?>" class="android-nav-item text-decoration-none <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'my-orders') ? 'active' : '' ?>">
         <div class="nav-icon-pill">
             <i class="bi bi-receipt"></i>
         </div>
         <span class="nav-label">Pesanan</span>
     </a>
 
-    <a href="<?= url('/portal/create-order') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'create-order') ? 'active' : '' ?>">
+    <a href="<?= url('/portal/create-order') ?>" class="android-nav-item text-decoration-none <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'create-order') ? 'active' : '' ?>">
         <div class="center-fab">
             <i class="bi bi-plus-lg"></i>
         </div>
         <span class="nav-label">Pesan Jemput</span>
     </a>
 
-    <button type="button" class="android-nav-item" onclick="SimLaundry.promptInstall()" title="Download Aplikasi Android">
+    <button type="button" class="android-nav-item text-decoration-none border-0 bg-transparent p-0" onclick="SimLaundry.promptInstall()" title="Download Aplikasi Android">
         <div class="nav-icon-pill">
             <i class="bi bi-android2 text-success"></i>
         </div>
@@ -115,14 +213,14 @@
     </button>
 
     <?php if (\App\Core\Auth::checkCustomer()): ?>
-    <a href="<?= url('/portal/profile') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'profile') ? 'active' : '' ?>">
+    <a href="<?= url('/portal/profile') ?>" class="android-nav-item text-decoration-none <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'profile') ? 'active' : '' ?>">
         <div class="nav-icon-pill">
             <i class="bi bi-person-circle"></i>
         </div>
         <span class="nav-label">Akun</span>
     </a>
     <?php else: ?>
-    <a href="<?= url('/portal/login') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'login') ? 'active' : '' ?>">
+    <a href="<?= url('/portal/login') ?>" class="android-nav-item text-decoration-none <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'login') ? 'active' : '' ?>">
         <div class="nav-icon-pill">
             <i class="bi bi-box-arrow-in-right"></i>
         </div>
