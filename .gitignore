@@ -1,0 +1,8 @@
+/storage/backups/*.sqlite
+/storage/logs/*.log
+/storage/temp/*
+!/storage/backups/.gitkeep
+!/storage/invoices/.gitkeep
+!/storage/logs/.gitkeep
+!/storage/temp/.gitkeep
+!/public/storage/delivery/.gitkeep

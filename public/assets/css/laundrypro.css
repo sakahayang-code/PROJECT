@@ -1,0 +1,328 @@
+/**
+ * LaundryPro Main SaaS Stylesheet
+ * Brand Colors:
+ * Primary: #13AFA8
+ * Primary Dark: #0B817C
+ * Sidebar: #102A43
+ * Background: #F4F8FA
+ * Card: #FFFFFF
+ */
+
+:root {
+    --lp-primary: #13AFA8;
+    --lp-primary-dark: #0B817C;
+    --lp-primary-light: #E6F7F6;
+    --lp-sidebar-bg: #102A43;
+    --lp-sidebar-hover: #1A3C5E;
+    --lp-sidebar-active: #13AFA8;
+    --lp-sidebar-text: #BAC7D5;
+    --lp-body-bg: #F4F8FA;
+    --lp-card-bg: #FFFFFF;
+    --lp-border-color: #E2E8F0;
+    --lp-text-main: #1E293B;
+    --lp-text-muted: #64748B;
+    
+    --bs-primary: #13AFA8;
+    --bs-primary-rgb: 19, 175, 168;
+    --bs-success: #16A34A;
+    --bs-warning: #F59E0B;
+    --bs-danger: #EF4444;
+    --bs-info: #3B82F6;
+}
+
+[data-bs-theme="dark"] {
+    --lp-body-bg: #0B1320;
+    --lp-card-bg: #152238;
+    --lp-sidebar-bg: #09121F;
+    --lp-sidebar-hover: #172844;
+    --lp-border-color: #1F3252;
+    --lp-text-main: #F1F5F9;
+    --lp-text-muted: #94A3B8;
+}
+
+body {
+    background-color: var(--lp-body-bg);
+    color: var(--lp-text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Custom Primary Buttons */
+.btn-primary {
+    background-color: var(--lp-primary) !important;
+    border-color: var(--lp-primary) !important;
+    color: #FFFFFF !important;
+    font-weight: 500;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: var(--lp-primary-dark) !important;
+    border-color: var(--lp-primary-dark) !important;
+}
+
+.btn-outline-primary {
+    color: var(--lp-primary) !important;
+    border-color: var(--lp-primary) !important;
+}
+.btn-outline-primary:hover {
+    background-color: var(--lp-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.bg-primary-subtle-custom {
+    background-color: var(--lp-primary-light) !important;
+    color: var(--lp-primary-dark) !important;
+}
+
+/* Cards */
+.card {
+    background-color: var(--lp-card-bg);
+    border: 1px solid var(--lp-border-color);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--lp-border-color);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+}
+
+/* App Wrapper & Layout */
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.app-sidebar {
+    width: 260px;
+    background-color: var(--lp-sidebar-bg);
+    color: var(--lp-sidebar-text);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s ease-in-out;
+    z-index: 1040;
+    flex-shrink: 0;
+}
+
+.sidebar-brand {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-brand .brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #13AFA8 0%, #0B817C 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    font-size: 1.25rem;
+}
+.sidebar-brand .brand-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+}
+.sidebar-brand .brand-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(19, 175, 168, 0.2);
+    color: var(--lp-primary);
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0.75rem;
+}
+.nav-heading {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #627D98;
+    padding: 0.75rem 0.75rem 0.25rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    color: var(--lp-sidebar-text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+    margin-bottom: 2px;
+}
+.sidebar-link:hover {
+    background-color: var(--lp-sidebar-hover);
+    color: #FFFFFF;
+}
+.sidebar-link.active {
+    background-color: var(--lp-primary);
+    color: #FFFFFF !important;
+}
+.sidebar-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content */
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.app-topbar {
+    height: 64px;
+    background-color: var(--lp-card-bg);
+    border-bottom: 1px solid var(--lp-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.app-content {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* Stat Cards */
+.stat-card {
+    border-radius: 12px;
+    border: 1px solid var(--lp-border-color);
+    background: var(--lp-card-bg);
+    padding: 1.25rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* Badges */
+.badge-status {
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* POS Screen */
+.pos-container {
+    height: calc(100vh - 90px);
+}
+.pos-services {
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
+.pos-cart {
+    background: var(--lp-card-bg);
+    border-left: 1px solid var(--lp-border-color);
+    height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+}
+.pos-cart-items {
+    flex: 1;
+    overflow-y: auto;
+}
+.service-tile {
+    cursor: pointer;
+    border: 1px solid var(--lp-border-color);
+    border-radius: 10px;
+    background: var(--lp-card-bg);
+    transition: all 0.15s ease;
+    user-select: none;
+}
+.service-tile:hover {
+    border-color: var(--lp-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(19, 175, 168, 0.15);
+}
+
+/* Responsive Sidebar Toggle */
+@media (max-width: 991.98px) {
+    .app-sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        bottom: 0;
+    }
+    .app-sidebar.show {
+        left: 0;
+    }
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1035;
+        display: none;
+    }
+    .sidebar-overlay.show {
+        display: block;
+    }
+}
+
+/* Thermal & Invoice Printing */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .printable-receipt, .printable-receipt * {
+        visibility: visible;
+    }
+    .printable-receipt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        margin: 0;
+        padding: 0;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+
+.receipt-58mm {
+    width: 58mm;
+    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    line-height: 1.3;
+}
+.receipt-80mm {
+    width: 80mm;
+    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    line-height: 1.4;
+}
