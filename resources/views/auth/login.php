@@ -2,10 +2,10 @@
     <?= csrf_field() ?>
 
     <div class="mb-3">
-        <label for="username" class="form-label small fw-semibold">Username / Email / Telepon</label>
+        <label for="username" class="form-label small fw-semibold">Username</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Masukkan username atau email" required autofocus>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Masukkan username" required autofocus>
         </div>
     </div>
 
