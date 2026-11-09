@@ -74,6 +74,21 @@ class Router
         if (false !== $pos = strpos($uri, '?')) {
             $uri = substr($uri, 0, $pos);
         }
+
+        // Auto-detect and strip subfolder base path if hosted in subdirectory (e.g. /PROJECT or /laundry)
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+        $baseDir = str_replace('\\', '/', dirname($scriptName));
+        if ($baseDir !== '/' && !empty($baseDir)) {
+            if (str_starts_with($uri, $baseDir)) {
+                $uri = substr($uri, strlen($baseDir));
+            } elseif (str_ends_with($baseDir, '/public')) {
+                $parentBase = str_replace('\\', '/', dirname($baseDir));
+                if ($parentBase !== '/' && !empty($parentBase) && str_starts_with($uri, $parentBase)) {
+                    $uri = substr($uri, strlen($parentBase));
+                }
+            }
+        }
+
         $uri = '/' . trim(rawurldecode($uri), '/');
         if ($uri === '//') {
             $uri = '/';

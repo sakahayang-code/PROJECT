@@ -1,8 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/mulw1713/public_html
+    - export DEPLOYPATH=/home/mulw1713/public_html/PROJECT
     - /bin/mkdir -p $DEPLOYPATH
-    - /bin/cp -R * $DEPLOYPATH
-    - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp -R * $DEPLOYPATH/
+    - /bin/cp .htaccess $DEPLOYPATH/
     - /bin/chmod -R 775 $DEPLOYPATH/storage $DEPLOYPATH/database
