@@ -71,29 +71,30 @@ class DashboardController extends Controller
         }
 
         // 10. Top Selling Services
+        $orderBranchClause = !empty($activeBranchId) ? " AND o.branch_id = :branch_id" : "";
         $sqlTopServices = "SELECT oi.service_name, COUNT(oi.id) as order_count, SUM(oi.subtotal) as total_sales
                            FROM order_items oi
                            JOIN orders o ON oi.order_id = o.id
-                           WHERE o.production_status != 'cancelled' " . $branchClause . "
+                           WHERE o.production_status != 'cancelled' " . $orderBranchClause . "
                            GROUP BY oi.service_name
                            ORDER BY total_sales DESC
                            LIMIT 5";
         $topServices = $this->db()->fetchAll($sqlTopServices, $branchParams);
 
         // 11. Low Stock Alerts
-        $invClause = !empty($activeBranchId) ? " WHERE bi.branch_id = " . (int)$activeBranchId : "";
+        $invClause = !empty($activeBranchId) ? " AND bi.branch_id = " . (int)$activeBranchId : "";
         $sqlLowStock = "SELECT bi.current_stock, bi.min_stock, ii.name as item_name, ii.unit, b.name as branch_name
                         FROM branch_inventory bi
                         JOIN inventory_items ii ON bi.item_id = ii.id
                         JOIN branches b ON bi.branch_id = b.id
-                        {$invClause}
                         WHERE bi.current_stock <= bi.min_stock
+                        {$invClause}
                         ORDER BY bi.current_stock ASC
                         LIMIT 5";
         $lowStockItems = $this->db()->fetchAll($sqlLowStock);
 
         // 12. Recent Activities
-        $actClause = !empty($activeBranchId) ? " WHERE branch_id = " . (int)$activeBranchId : "";
+        $actClause = !empty($activeBranchId) ? " WHERE a.branch_id = " . (int)$activeBranchId : "";
         $sqlActivities = "SELECT a.*, u.name as user_name 
                           FROM activity_logs a 
                           LEFT JOIN users u ON a.user_id = u.id 

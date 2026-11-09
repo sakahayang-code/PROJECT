@@ -274,7 +274,7 @@ class Auth
             return (int)$active;
         }
         $user = self::user();
-        return $user['branch_id'] ? (int)$user['branch_id'] : null;
+        return ($user && !empty($user['branch_id'])) ? (int)$user['branch_id'] : null;
     }
 
     public static function setActiveBranchId(int $branchId): bool
