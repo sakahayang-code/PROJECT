@@ -328,24 +328,142 @@ body {
 }
 
 /* ==========================================================================
-   Android Bottom Navigation & PWA Install Banner
+   NATIVE ANDROID (MATERIAL DESIGN 3) SYSTEM STYLES
+   ========================================================================== */
+
+/* Android Native Touch & Typography Setup */
+@media (max-width: 991.98px) {
+    html, body {
+        font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation;
+        overscroll-behavior-y: contain;
+    }
+
+    body {
+        padding-bottom: 76px !important;
+        background-color: #F8FAFC;
+    }
+
+    /* Native Android Top App Bar */
+    .app-topbar {
+        height: 58px !important;
+        padding: 0 12px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Native Android Content Spacing */
+    .app-content {
+        padding: 14px 12px 28px !important;
+    }
+
+    /* Native Android Card Material 3 Style */
+    .card {
+        border-radius: 20px !important;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+        margin-bottom: 14px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 14px 16px !important;
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+
+    .card-body {
+        padding: 14px 16px !important;
+    }
+
+    .stat-card {
+        border-radius: 20px !important;
+        padding: 14px 16px !important;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .stat-icon {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 14px !important;
+    }
+
+    /* Touch Controls & Form Inputs */
+    .btn {
+        border-radius: 14px;
+        font-weight: 600;
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.1s ease, background-color 0.15s ease;
+    }
+    .btn:active {
+        transform: scale(0.96);
+    }
+
+    .btn-sm {
+        min-height: 34px;
+        border-radius: 10px;
+        padding: 4px 12px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 14px !important;
+        min-height: 48px;
+        font-size: 14.5px !important;
+        border-color: #E2E8F0;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--lp-primary);
+        box-shadow: 0 0 0 3px rgba(19, 175, 168, 0.15);
+    }
+
+    .badge {
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-weight: 600;
+    }
+
+    /* Mobile Table horizontal swipe container */
+    .table-responsive {
+        border-radius: 14px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive table {
+        font-size: 0.85rem;
+    }
+
+    /* Hide desktop sidebar toggle button on mobile since we have native bottom sheet */
+    #sidebarToggleBtn {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   Material Design 3 Android Navigation Bar
    ========================================================================== */
 .android-bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid var(--lp-border-color);
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+    height: 68px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
     display: flex;
     align-items: center;
     justify-content: space-around;
     z-index: 1040;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding: 4px 8px env(safe-area-inset-bottom, 4px);
 }
 
 .android-nav-item {
@@ -355,65 +473,159 @@ body {
     justify-content: center;
     flex: 1;
     height: 100%;
-    color: var(--lp-text-muted);
+    color: #64748B;
     text-decoration: none;
-    font-size: 0.7rem;
-    font-weight: 500;
-    transition: all 0.15s ease-in-out;
     background: transparent;
     border: none;
-    padding: 6px 2px;
+    padding: 2px;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-}
-
-.android-nav-item i {
-    font-size: 1.25rem;
-    line-height: 1;
-    margin-bottom: 3px;
     transition: transform 0.15s ease;
 }
+.android-nav-item:active {
+    transform: scale(0.92);
+}
 
-.android-nav-item:hover,
-.android-nav-item:active,
-.android-nav-item.active {
+/* Material 3 Active Pill Indicator */
+.android-nav-item .nav-icon-pill {
+    width: 52px;
+    height: 30px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+    margin-bottom: 2px;
+}
+
+.android-nav-item .nav-icon-pill i {
+    font-size: 1.25rem;
+    line-height: 1;
+    color: inherit;
+    transition: transform 0.2s ease;
+}
+
+.android-nav-item .nav-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #64748B;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.android-nav-item.active .nav-icon-pill {
+    background-color: rgba(19, 175, 168, 0.18);
     color: var(--lp-primary);
-    font-weight: 600;
 }
 
-.android-nav-item.active i {
-    transform: scale(1.15);
+.android-nav-item.active .nav-icon-pill i {
+    transform: scale(1.1);
+    color: var(--lp-primary);
 }
 
-.android-nav-item .center-action-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--lp-primary) 0%, var(--lp-primary-dark) 100%);
+.android-nav-item.active .nav-label {
+    color: var(--lp-primary);
+    font-weight: 700;
+}
+
+/* Center Elevated FAB (Kasir / Pesan Jemput) */
+.android-nav-item .center-fab {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px; /* Squircle Material 3 */
+    background: linear-gradient(135deg, #13AFA8 0%, #0B817C 100%);
     color: #ffffff !important;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: -18px;
-    box-shadow: 0 4px 12px rgba(19, 175, 168, 0.45);
+    box-shadow: 0 6px 16px rgba(19, 175, 168, 0.45);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.android-nav-item:active .center-action-btn {
-    transform: scale(0.92);
+.android-nav-item:active .center-fab {
+    transform: scale(0.9);
 }
 
-.android-nav-item .center-action-btn i {
-    font-size: 1.4rem;
+.android-nav-item .center-fab i {
+    font-size: 1.45rem;
     margin-bottom: 0;
     color: #ffffff !important;
+}
+
+/* ==========================================================================
+   Material Design 3 Modal Bottom Sheet (Native Android App Drawer)
+   ========================================================================== */
+.m3-bottom-sheet {
+    border-top-left-radius: 28px !important;
+    border-top-right-radius: 28px !important;
+    border: none !important;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2) !important;
+    max-height: 85vh !important;
+    background: #FFFFFF;
+}
+
+.m3-drag-handle {
+    width: 40px;
+    height: 4.5px;
+    border-radius: 3px;
+    background: #CBD5E1;
+    margin: 10px auto 16px;
+}
+
+.m3-app-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px 8px;
+    text-align: center;
+    padding: 0 4px 16px;
+}
+
+.m3-app-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #1E293B;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s ease;
+}
+.m3-app-item:active {
+    transform: scale(0.88);
+}
+
+.m3-app-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.45rem;
+    margin-bottom: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease;
+}
+
+.m3-app-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #334155;
+    line-height: 1.2;
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 /* PWA Install Floating Notification Banner */
 .pwa-install-banner {
     position: fixed;
-    bottom: 74px;
+    bottom: 78px;
     left: 12px;
     right: 12px;
     max-width: 440px;
@@ -434,22 +646,58 @@ body {
 }
 
 .pwa-install-banner .card {
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    border: 1px solid var(--lp-border-color);
-    background: var(--lp-card-bg);
+    border-radius: 20px !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    background: #FFFFFF;
 }
 
-/* Responsive adjustment on mobile when bottom nav is present */
-@media (max-width: 991.98px) {
-    body {
-        padding-bottom: 68px;
+/* Fullscreen Native Android Login View on Handphones */
+@media (max-width: 576px) {
+    .auth-container {
+        padding: 0 !important;
+        background: #FFFFFF !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
-    .app-content {
-        padding-bottom: 2rem;
+
+    .auth-card {
+        border-radius: 0 !important;
+        max-width: 100% !important;
+        min-height: 100vh;
+        box-shadow: none !important;
+        border: none !important;
+        display: flex;
+        flex-direction: column;
     }
-    .portal-footer {
-        margin-bottom: 64px;
+
+    .auth-header {
+        border-bottom-left-radius: 36px !important;
+        border-bottom-right-radius: 36px !important;
+        padding: 3rem 1.5rem 2.25rem !important;
+        box-shadow: 0 6px 20px rgba(11, 129, 124, 0.25);
+    }
+
+    .auth-body {
+        padding: 2rem 1.5rem 3rem !important;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .auth-body .form-control {
+        min-height: 52px !important;
+        border-radius: 16px !important;
+        font-size: 15px !important;
+    }
+
+    .auth-body .btn-primary {
+        min-height: 52px !important;
+        border-radius: 26px !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
     }
 }
 
@@ -466,22 +714,76 @@ body {
     }
 }
 
-/* Dark theme overrides for Android Nav & PWA Banner */
-[data-bs-theme="dark"] .android-bottom-nav {
-    background: rgba(17, 24, 39, 0.95);
-    border-top-color: #1F3252;
+/* Dark theme overrides for Native Android Styles */
+[data-bs-theme="dark"] body {
+    background-color: #0B1320;
 }
 
-[data-bs-theme="dark"] .android-nav-item {
+[data-bs-theme="dark"] .app-topbar {
+    background: rgba(15, 23, 42, 0.98) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .android-bottom-nav {
+    background: rgba(15, 23, 42, 0.98);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-bs-theme="dark"] .android-nav-item .nav-label {
     color: #94A3B8;
 }
 
-[data-bs-theme="dark"] .android-nav-item.active {
-    color: var(--lp-primary);
+[data-bs-theme="dark"] .android-nav-item.active .nav-icon-pill {
+    background-color: rgba(19, 175, 168, 0.25);
+}
+
+[data-bs-theme="dark"] .m3-bottom-sheet {
+    background: #111C2E !important;
+}
+
+[data-bs-theme="dark"] .m3-drag-handle {
+    background: #334155;
+}
+
+[data-bs-theme="dark"] .m3-app-item {
+    color: #F1F5F9;
+}
+
+[data-bs-theme="dark"] .m3-app-label {
+    color: #CBD5E1;
 }
 
 [data-bs-theme="dark"] .pwa-install-banner .card {
     background: #152238;
-    border-color: #1F3252;
+    border-color: #1F3252 !important;
 }
+
+[data-bs-theme="dark"] .auth-container {
+    background: #0B1320 !important;
+}
+
+/* Mobile Floating POS Cart Bar */
+#mobilePosCartBar {
+    position: fixed;
+    bottom: 74px;
+    left: 12px;
+    right: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 10px 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16);
+    z-index: 1030;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    animation: pwaSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-bs-theme="dark"] #mobilePosCartBar {
+    background: #152238 !important;
+    border-color: #1F3252 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+
 

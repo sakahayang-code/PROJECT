@@ -105,7 +105,7 @@
         <h6 class="card-title fw-bold m-0"><i class="bi bi-geo-alt me-2 text-primary"></i>Daftar Tugas Pickup & Pengantaran</h6>
         <span class="badge bg-secondary-subtle text-secondary"><?= count($requests) ?> data ditemukan</span>
     </div>
-    <div class="table-responsive">
+    <div class="table-responsive d-none d-lg-block">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
@@ -219,6 +219,120 @@
                 <?php endif; ?>
             </tbody>
         </table>
+    </div>
+
+    <!-- Mobile Native Android Driver Card List (Phones & Tablets) -->
+    <div class="d-lg-none p-3">
+        <?php if (empty($requests)): ?>
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>
+                Tidak ada tugas pickup/pengantaran.
+            </div>
+        <?php else: ?>
+            <div class="d-flex flex-column gap-3">
+                <?php foreach ($requests as $r): ?>
+                    <?php
+                    $badgeClass = match($r['status']) {
+                        'pending' => 'bg-warning-subtle text-warning border border-warning',
+                        'assigned' => 'bg-info-subtle text-info border border-info',
+                        'on_the_way' => 'bg-primary text-white',
+                        'picked_up', 'delivered' => 'bg-success text-white',
+                        'failed', 'cancelled' => 'bg-danger text-white',
+                        default => 'bg-secondary text-white'
+                    };
+                    $statusLabel = match($r['status']) {
+                        'pending' => 'Menunggu Kurir',
+                        'assigned' => 'Ditugaskan',
+                        'on_the_way' => 'Dalam Perjalanan',
+                        'picked_up' => 'Selesai Dijemput',
+                        'delivered' => 'Selesai Diantar',
+                        'failed' => 'Gagal',
+                        'cancelled' => 'Dibatalkan',
+                        default => $r['status']
+                    };
+                    ?>
+                    <div class="card border rounded-4 shadow-sm p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <?php if ($r['type'] === 'pickup'): ?>
+                                    <span class="badge bg-info-subtle text-info rounded-pill px-2 py-1"><i class="bi bi-box-arrow-in-down me-1"></i>Penjemputan</span>
+                                <?php else: ?>
+                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1"><i class="bi bi-box-arrow-up-right me-1"></i>Pengantaran</span>
+                                <?php endif; ?>
+                                <span class="text-muted small ms-1" style="font-size:0.75rem;">
+                                    <?= format_date($r['schedule_date'], 'd M') ?> &bull; <?= e($r['schedule_time'] ?: 'Fleksibel') ?>
+                                </span>
+                            </div>
+                            <span class="badge <?= $badgeClass ?> rounded-pill px-2 py-1">
+                                <?= $statusLabel ?>
+                            </span>
+                        </div>
+
+                        <div class="mb-2">
+                            <div class="fw-bold text-dark fs-6"><?= e($r['customer_name']) ?></div>
+                            <div class="small text-muted text-break mt-1">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i><?= e($r['address_text']) ?>
+                            </div>
+                            <?php if (!empty($r['notes'])): ?>
+                                <div class="small text-muted fst-italic mt-1 bg-light p-2 rounded">
+                                    <i class="bi bi-chat-left-text me-1"></i><?= e($r['notes']) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom small">
+                            <div>
+                                <span class="text-muted">Kurir:</span>
+                                <strong class="text-primary ms-1"><?= e($r['courier_name'] ?: 'Belum ada') ?></strong>
+                            </div>
+                            <div>
+                                <span class="text-muted">Ongkir:</span>
+                                <strong><?= (int)$r['fee'] > 0 ? format_rupiah($r['fee']) : '<span class="text-success">Gratis</span>' ?></strong>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <?php
+                            $cleanPhone = preg_replace('/[^0-9]/', '', $r['customer_phone'] ?? '');
+                            if (str_starts_with($cleanPhone, '0')) {
+                                $cleanPhone = '62' . substr($cleanPhone, 1);
+                            }
+                            ?>
+                            <?php if (!empty($cleanPhone)): ?>
+                                <a href="https://wa.me/<?= $cleanPhone ?>" target="_blank" class="btn btn-sm btn-success rounded-pill px-3">
+                                    <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                                </a>
+                            <?php endif; ?>
+                            <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($r['address_text']) ?>" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <i class="bi bi-map me-1"></i> Navigasi
+                            </a>
+                            <div class="dropdown ms-auto">
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                                    Aksi
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="openAssignModal(<?= $r['id'] ?>, '<?= e($r['customer_name']) ?>', <?= (int)$r['courier_user_id'] ?>)">
+                                            <i class="bi bi-person-plus me-2 text-primary"></i>Tugaskan Kurir
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="openStatusModal(<?= $r['id'] ?>, '<?= $r['status'] ?>')">
+                                            <i class="bi bi-arrow-repeat me-2 text-info"></i>Ubah Status
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="openProofModal(<?= $r['id'] ?>, '<?= $r['type'] ?>', '<?= e($r['customer_name']) ?>')">
+                                            <i class="bi bi-camera me-2 text-success"></i>Upload Bukti Terima
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

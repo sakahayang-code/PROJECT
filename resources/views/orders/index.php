@@ -59,9 +59,10 @@
 </div>
 
 <!-- Orders Table -->
-<div class="card shadow-sm">
+<div class="card shadow-sm border-0">
     <div class="card-body p-0">
-        <div class="table-responsive">
+        <!-- Desktop Table View -->
+        <div class="table-responsive d-none d-lg-block">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light small">
                     <tr>
@@ -137,6 +138,72 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Android Card List View (Phones & Tablets) -->
+        <div class="d-lg-none p-3">
+            <?php if (empty($orders)): ?>
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>
+                    Tidak ada data pesanan yang cocok.
+                </div>
+            <?php else: ?>
+                <div class="d-flex flex-column gap-3">
+                    <?php foreach ($orders as $o): ?>
+                        <?php
+                            $pBadge = 'bg-secondary';
+                            if ($o['production_status'] === 'received') $pBadge = 'bg-info';
+                            elseif ($o['production_status'] === 'in_process') $pBadge = 'bg-primary';
+                            elseif ($o['production_status'] === 'ready') $pBadge = 'bg-success';
+                            elseif ($o['production_status'] === 'cancelled') $pBadge = 'bg-danger';
+                            elseif ($o['production_status'] === 'completed') $pBadge = 'bg-dark';
+                        ?>
+                        <div class="card border rounded-4 shadow-sm p-3 position-relative">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <a href="<?= url('/orders/' . $o['id']) ?>" class="fw-bold text-primary text-decoration-none fs-6">
+                                        <?= e($o['order_no']) ?>
+                                    </a>
+                                    <div class="text-muted" style="font-size:0.75rem;"><?= format_date($o['created_at']) ?></div>
+                                </div>
+                                <span class="badge <?= $pBadge ?> rounded-pill px-2 py-1">
+                                    <?= ucfirst($o['production_status']) ?>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                <div>
+                                    <div class="fw-semibold text-dark small"><?= e($o['customer_name']) ?></div>
+                                    <div class="text-muted" style="font-size:0.75rem;">
+                                        <i class="bi bi-telephone text-muted me-1"></i><?= e($o['customer_phone']) ?> &bull; <i class="bi bi-shop me-1"></i><?= e($o['branch_name']) ?>
+                                    </div>
+                                </div>
+                                <span class="badge <?= $o['payment_status'] === 'paid' ? 'bg-success' : ($o['payment_status'] === 'partial' ? 'bg-warning text-dark' : 'bg-danger') ?> rounded-pill px-2 py-1">
+                                    <?= strtoupper($o['payment_status']) ?>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted small" style="font-size: 0.75rem;">Tagihan: </span>
+                                    <span class="fw-bold text-dark"><?= format_rupiah($o['grand_total']) ?></span>
+                                    <?php if ($o['balance_due'] > 0): ?>
+                                        <div class="text-danger small" style="font-size:0.72rem;">Sisa: <?= format_rupiah($o['balance_due']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="<?= url('/orders/' . $o['id'] . '/print') ?>" target="_blank" class="btn btn-sm btn-light border rounded-pill px-2" title="Cetak Nota">
+                                        <i class="bi bi-printer"></i>
+                                    </a>
+                                    <a href="<?= url('/orders/' . $o['id']) ?>" class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold">
+                                        Detail <i class="bi bi-chevron-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

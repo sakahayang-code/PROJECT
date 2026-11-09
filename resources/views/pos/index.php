@@ -44,7 +44,7 @@
     </div>
 
     <!-- Right: Customer & Cart -->
-    <div class="col-lg-5 col-xl-4">
+    <div class="col-lg-5 col-xl-4" id="posCartColumn">
         <div class="card shadow-sm h-100 d-flex flex-column">
             <!-- Customer Picker -->
             <div class="card-header bg-white p-3 border-bottom">
@@ -161,6 +161,26 @@
                     <span>PROSES PEMBAYARAN</span>
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Android Cart Bar (Mobile Only) -->
+<div id="mobilePosCartBar" class="d-lg-none" style="display: none !important;">
+    <div class="d-flex align-items-center justify-content-between">
+        <div onclick="scrollToPosCart()" style="cursor: pointer;">
+            <div class="small text-muted" style="font-size: 0.72rem;">
+                <i class="bi bi-cart-fill text-primary me-1"></i><span id="mobileCartItemCount" class="fw-bold text-dark">0</span> Layanan
+            </div>
+            <div class="fw-bold text-primary fs-6" id="mobileCartTotal">Rp 0</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" onclick="scrollToPosCart()">
+                <i class="bi bi-list-check me-1"></i> Keranjang
+            </button>
+            <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="openPaymentModal()">
+                Bayar <i class="bi bi-arrow-right ms-1"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -362,16 +382,24 @@ function renderCart() {
     const container = document.getElementById('cartItemsList');
     const emptyMsg = document.getElementById('emptyCartMessage');
     const checkoutBtn = document.getElementById('btnOpenPayment');
+    const mobileCartBar = document.getElementById('mobilePosCartBar');
 
     if (cart.length === 0) {
         container.innerHTML = '';
         emptyMsg.style.display = 'block';
         checkoutBtn.disabled = true;
+        if (mobileCartBar) {
+            mobileCartBar.style.setProperty('display', 'none', 'important');
+        }
         return;
     }
 
     emptyMsg.style.display = 'none';
     checkoutBtn.disabled = false;
+    if (mobileCartBar) {
+        mobileCartBar.style.removeProperty('display');
+        mobileCartBar.style.display = 'block';
+    }
 
     let html = '';
     cart.forEach((item, index) => {
@@ -502,6 +530,26 @@ function updateCalculations() {
 
     document.getElementById('grandTotalDisplay').innerText = LaundryPro.formatRupiah(grandTotal);
     window.currentGrandTotal = grandTotal;
+
+    const mobileTotalEl = document.getElementById('mobileCartTotal');
+    const mobileCountEl = document.getElementById('mobileCartItemCount');
+    if (mobileTotalEl) {
+        mobileTotalEl.innerText = LaundryPro.formatRupiah(grandTotal);
+    }
+    if (mobileCountEl) {
+        let count = 0;
+        cart.forEach(item => {
+            count += (item.unit_type === 'kg' ? 1 : item.quantity);
+        });
+        mobileCountEl.innerText = count;
+    }
+}
+
+function scrollToPosCart() {
+    const col = document.getElementById('posCartColumn');
+    if (col) {
+        col.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 // Customer autocomplete

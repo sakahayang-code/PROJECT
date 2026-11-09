@@ -2,7 +2,10 @@
 <html lang="id" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="csrf-token" content="<?= e($csrfToken ?? '') ?>">
     <title><?= e($title ?? 'Portal Pelanggan') ?> — SimLaundry</title>
 
@@ -81,39 +84,49 @@
     </div>
 </footer>
 
-<!-- Navigasi Bawah Android Pelanggan (Mobile) -->
+<!-- Navigasi Bawah Android Pelanggan Material 3 (Mobile) -->
 <nav class="android-bottom-nav d-lg-none" aria-label="Navigasi Bawah Android">
     <a href="<?= url('/portal') ?>" class="android-nav-item <?= !str_contains($_SERVER['REQUEST_URI'] ?? '', 'my-orders') && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'create-order') && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'profile') ? 'active' : '' ?>">
-        <i class="bi bi-house-door-fill"></i>
-        <span>Beranda</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-house-door-fill"></i>
+        </div>
+        <span class="nav-label">Beranda</span>
     </a>
 
     <a href="<?= url('/portal/my-orders') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'my-orders') ? 'active' : '' ?>">
-        <i class="bi bi-receipt"></i>
-        <span>Pesanan</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-receipt"></i>
+        </div>
+        <span class="nav-label">Pesanan</span>
     </a>
 
     <a href="<?= url('/portal/create-order') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'create-order') ? 'active' : '' ?>">
-        <div class="center-action-btn">
+        <div class="center-fab">
             <i class="bi bi-plus-lg"></i>
         </div>
-        <span>Pesan Jemput</span>
+        <span class="nav-label">Pesan Jemput</span>
     </a>
 
     <button type="button" class="android-nav-item" onclick="SimLaundry.promptInstall()" title="Download Aplikasi Android">
-        <i class="bi bi-android2 text-success"></i>
-        <span>Download</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-android2 text-success"></i>
+        </div>
+        <span class="nav-label">Download</span>
     </button>
 
     <?php if (\App\Core\Auth::checkCustomer()): ?>
     <a href="<?= url('/portal/profile') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'profile') ? 'active' : '' ?>">
-        <i class="bi bi-person-circle"></i>
-        <span>Akun</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-person-circle"></i>
+        </div>
+        <span class="nav-label">Akun</span>
     </a>
     <?php else: ?>
     <a href="<?= url('/portal/login') ?>" class="android-nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'login') ? 'active' : '' ?>">
-        <i class="bi bi-box-arrow-in-right"></i>
-        <span>Masuk</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-box-arrow-in-right"></i>
+        </div>
+        <span class="nav-label">Masuk</span>
     </a>
     <?php endif; ?>
 </nav>

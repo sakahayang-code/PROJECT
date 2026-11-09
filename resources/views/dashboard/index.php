@@ -1,4 +1,64 @@
-<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+<!-- Mobile Native Android Header & Quick Action Launcher (Mobile Only) -->
+<div class="d-lg-none mb-3">
+    <div class="card border-0 bg-primary text-white p-3 shadow-sm mb-3" style="background: linear-gradient(135deg, #102A43 0%, #0B817C 100%) !important;">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-white text-primary p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; font-weight: 700; font-size: 1.1rem;">
+                    <?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?>
+                </div>
+                <div>
+                    <div class="small text-white-50" style="font-size: 0.72rem;">Selamat datang,</div>
+                    <div class="fw-bold mb-0 text-white" style="font-size: 1rem;"><?= e($currentUser['name'] ?? 'Staff') ?></div>
+                </div>
+            </div>
+            <span class="badge bg-white text-primary px-2 py-1 shadow-sm" style="font-size: 0.7rem;">
+                <i class="bi bi-geo-alt-fill me-1"></i><?= e($activeBranchName ?? 'Pusat') ?>
+            </span>
+        </div>
+    </div>
+
+    <!-- Quick Actions Native Grid -->
+    <div class="card border-0 shadow-sm p-3 mb-3">
+        <div class="small fw-bold text-muted mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Aksi Cepat</div>
+        <div class="row g-2 text-center">
+            <div class="col-3">
+                <a href="<?= url('/pos') ?>" class="text-decoration-none text-dark d-flex flex-column align-items-center">
+                    <div class="rounded-3 bg-warning text-dark p-2 mb-1 shadow-sm d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-cart-check-fill fs-4"></i>
+                    </div>
+                    <span class="small fw-semibold" style="font-size: 0.7rem;">Kasir POS</span>
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="<?= url('/orders') ?>" class="text-decoration-none text-dark d-flex flex-column align-items-center">
+                    <div class="rounded-3 bg-info text-white p-2 mb-1 shadow-sm d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-receipt fs-4"></i>
+                    </div>
+                    <span class="small fw-semibold" style="font-size: 0.7rem;">Pesanan</span>
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="<?= url('/production') ?>" class="text-decoration-none text-dark d-flex flex-column align-items-center">
+                    <div class="rounded-3 bg-primary text-white p-2 mb-1 shadow-sm d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-diagram-3-fill fs-4"></i>
+                    </div>
+                    <span class="small fw-semibold" style="font-size: 0.7rem;">Produksi</span>
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="<?= url('/delivery') ?>" class="text-decoration-none text-dark d-flex flex-column align-items-center">
+                    <div class="rounded-3 bg-success text-white p-2 mb-1 shadow-sm d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-truck fs-4"></i>
+                    </div>
+                    <span class="small fw-semibold" style="font-size: 0.7rem;">Kurir</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Desktop Header (Desktop Only) -->
+<div class="d-none d-lg-flex align-items-md-center justify-content-between mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-1">
             <?= $isOwnerOrSuper ? 'Ringkasan Konsolidasi SimLaundry' : 'Dashboard Operasional Cabang' ?>

@@ -11,7 +11,7 @@
 </div>
 
 <div class="card shadow-sm border-0">
-    <div class="table-responsive">
+    <div class="table-responsive d-none d-lg-block">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
@@ -104,6 +104,89 @@
                 <?php endif; ?>
             </tbody>
         </table>
+    </div>
+
+    <!-- Mobile Card List View (Phones & Tablets) -->
+    <div class="d-lg-none p-3">
+        <?php if (empty($orders)): ?>
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>
+                Belum ada riwayat transaksi cucian.
+            </div>
+        <?php else: ?>
+            <div class="d-flex flex-column gap-3">
+                <?php foreach ($orders as $o): ?>
+                    <?php
+                    $badge = match($o['production_status']) {
+                        'completed' => 'bg-success text-white',
+                        'ready' => 'bg-info text-white',
+                        'delivering' => 'bg-primary text-white',
+                        'in_process', 'qc', 'packaging' => 'bg-warning text-dark',
+                        'cancelled' => 'bg-danger text-white',
+                        default => 'bg-secondary text-white'
+                    };
+                    ?>
+                    <div class="card border rounded-4 shadow-sm p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="badge bg-dark font-monospace fs-6"><?= e($o['order_no']) ?></span>
+                                <div class="text-muted small mt-1" style="font-size:0.75rem;">
+                                    <?= format_date($o['created_at'], 'd M Y, H:i') ?> &bull; <?= e($o['branch_name']) ?>
+                                </div>
+                            </div>
+                            <span class="badge <?= $badge ?> rounded-pill px-2 py-1">
+                                <?= strtoupper($o['production_status']) ?>
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <div>
+                                <span class="text-muted small" style="font-size:0.75rem;">Total Tagihan</span>
+                                <div class="fw-bold text-dark fs-6"><?= format_rupiah($o['grand_total']) ?></div>
+                            </div>
+                            <div>
+                                <?php if ($o['payment_status'] === 'paid'): ?>
+                                    <span class="badge bg-success-subtle text-success border border-success rounded-pill px-2 py-1">Lunas</span>
+                                <?php elseif ($o['payment_status'] === 'partial'): ?>
+                                    <span class="badge bg-info-subtle text-info border border-info rounded-pill px-2 py-1">DP (Sisa <?= format_rupiah($o['balance_due']) ?>)</span>
+                                <?php else: ?>
+                                    <span class="badge bg-warning-subtle text-warning border border-warning rounded-pill px-2 py-1">Belum Bayar</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <?php if (!empty($o['rating'])): ?>
+                            <div class="mb-2 d-flex align-items-center gap-1 text-warning small">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <i class="bi bi-star<?= $i <= (int)$o['rating'] ? '-fill' : '' ?>"></i>
+                                <?php endfor; ?>
+                                <?php if (!empty($o['review_comment'])): ?>
+                                    <span class="text-muted fst-italic ms-1 text-truncate" style="font-size: 0.75rem;">"<?= e($o['review_comment']) ?>"</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="d-flex justify-content-between align-items-center gap-2 pt-1">
+                            <a href="<?= url('/track/' . $o['tracking_token']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                <i class="bi bi-qr-code me-1"></i> Lacak Status
+                            </a>
+                            <div class="d-flex gap-2">
+                                <?php if (empty($o['rating']) && $o['production_status'] === 'completed'): ?>
+                                    <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3" onclick="openReviewModal(<?= $o['id'] ?>, '<?= e($o['order_no']) ?>')">
+                                        <i class="bi bi-star me-1"></i> Beri Ulasan
+                                    </button>
+                                <?php endif; ?>
+                                <?php if ($o['payment_status'] !== 'paid'): ?>
+                                    <button type="button" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm" onclick="openPayModal(<?= $o['id'] ?>, '<?= e($o['order_no']) ?>', <?= (int)$o['balance_due'] ?>)">
+                                        Bayar QRIS
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

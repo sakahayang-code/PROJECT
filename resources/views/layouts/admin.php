@@ -2,7 +2,10 @@
 <html lang="id" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="csrf-token" content="<?= e($csrfToken ?? '') ?>">
     <title><?= e($title ?? 'Dashboard') ?> — <?= e($appConfig['name']) ?></title>
     
@@ -147,10 +150,19 @@
 
     <!-- Main Section -->
     <div class="app-main">
-        <!-- Topbar -->
+        <!-- Topbar (Material 3 Top App Bar on Mobile) -->
         <header class="app-topbar">
-            <div class="d-flex align-items-center gap-3">
-                <button type="button" class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggleBtn">
+            <div class="d-flex align-items-center gap-2">
+                <!-- Mobile App Logo & Brand -->
+                <div class="d-flex align-items-center gap-2 d-lg-none">
+                    <div class="rounded-3 bg-white p-1 shadow-sm d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <img src="<?= asset('img/logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <span class="fw-bold fs-6 text-dark tracking-tight">SimLaundry</span>
+                </div>
+
+                <!-- Desktop Sidebar Toggle Button -->
+                <button type="button" class="btn btn-sm btn-outline-secondary d-none d-lg-inline-flex" id="sidebarToggleBtn">
                     <i class="bi bi-list fs-5"></i>
                 </button>
                 
@@ -158,7 +170,7 @@
                 <?php
                     $branches = \App\Core\Database::getInstance()->fetchAll("SELECT id, name, code FROM branches WHERE is_active = 1");
                     $activeBranchId = \App\Core\Auth::getActiveBranchId();
-                    $activeBranchName = 'Semua Cabang (Konsolidasi)';
+                    $activeBranchName = 'Semua Cabang';
                     foreach ($branches as $b) {
                         if ((int)$b['id'] === (int)$activeBranchId) {
                             $activeBranchName = $b['name'];
@@ -168,9 +180,9 @@
                 ?>
                 <?php if (\App\Core\Auth::hasGlobalAccess() || count($branches) > 1): ?>
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-light border dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-sm btn-light border rounded-pill dropdown-toggle d-flex align-items-center gap-1 px-2 py-1" type="button" data-bs-toggle="dropdown" style="font-size: 0.78rem;">
                         <i class="bi bi-geo-alt-fill text-primary"></i>
-                        <span class="fw-semibold small d-none d-sm-inline"><?= e($activeBranchName) ?></span>
+                        <span class="fw-semibold text-truncate d-inline-block" style="max-width: 110px;"><?= e($activeBranchName) ?></span>
                     </button>
                     <ul class="dropdown-menu shadow-sm">
                         <?php if (\App\Core\Auth::hasGlobalAccess()): ?>
@@ -259,49 +271,211 @@
     </div>
 </div>
 
-<!-- Navigasi Bawah Android (Mobile & Tablet) -->
+<!-- Navigasi Bawah Android Material 3 (Mobile & Tablet) -->
 <nav class="android-bottom-nav d-lg-none" aria-label="Navigasi Bawah Android">
     <a href="<?= url('/dashboard') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'dashboard' ? 'active' : '' ?>">
-        <i class="bi bi-grid-1x2-fill"></i>
-        <span>Dashboard</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-grid-1x2-fill"></i>
+        </div>
+        <span class="nav-label">Dashboard</span>
     </a>
 
     <?php if (\App\Core\Auth::hasPermission('pos.access')): ?>
     <a href="<?= url('/pos') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'pos' ? 'active' : '' ?>">
-        <div class="center-action-btn">
+        <div class="center-fab">
             <i class="bi bi-cart-check-fill"></i>
         </div>
-        <span>Kasir POS</span>
+        <span class="nav-label">Kasir POS</span>
     </a>
     <?php endif; ?>
 
     <a href="<?= url('/orders') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'orders' ? 'active' : '' ?>">
-        <i class="bi bi-receipt"></i>
-        <span>Pesanan</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-receipt"></i>
+        </div>
+        <span class="nav-label">Pesanan</span>
     </a>
 
     <?php if (\App\Core\Auth::hasPermission('production.access')): ?>
     <a href="<?= url('/production') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'production' ? 'active' : '' ?>">
-        <i class="bi bi-diagram-3-fill"></i>
-        <span>Produksi</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-diagram-3-fill"></i>
+        </div>
+        <span class="nav-label">Produksi</span>
     </a>
     <?php elseif (\App\Core\Auth::hasPermission('delivery.access')): ?>
     <a href="<?= url('/delivery') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'delivery' ? 'active' : '' ?>">
-        <i class="bi bi-truck"></i>
-        <span>Kurir</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-truck"></i>
+        </div>
+        <span class="nav-label">Kurir</span>
     </a>
     <?php else: ?>
     <a href="<?= url('/customers') ?>" class="android-nav-item <?= ($activeMenu ?? '') === 'customers' ? 'active' : '' ?>">
-        <i class="bi bi-people-fill"></i>
-        <span>Pelanggan</span>
+        <div class="nav-icon-pill">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <span class="nav-label">Pelanggan</span>
     </a>
     <?php endif; ?>
 
-    <button type="button" class="android-nav-item" id="mobileBottomMenuBtn" onclick="document.getElementById('sidebarToggleBtn')?.click()">
-        <i class="bi bi-grid-3x3-gap-fill"></i>
-        <span>Menu</span>
+    <button type="button" class="android-nav-item" data-bs-toggle="offcanvas" data-bs-target="#androidMenuBottomSheet" aria-controls="androidMenuBottomSheet">
+        <div class="nav-icon-pill">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+        </div>
+        <span class="nav-label">Menu</span>
     </button>
 </nav>
+
+<!-- Native Android Material 3 Modal Bottom Sheet (Menu Drawer) -->
+<div class="offcanvas offcanvas-bottom m3-bottom-sheet" tabindex="-1" id="androidMenuBottomSheet" aria-labelledby="androidMenuBottomSheetLabel">
+    <div class="m3-drag-handle"></div>
+    <div class="offcanvas-header pt-0 pb-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 38px; height: 38px;">
+                <?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?>
+            </div>
+            <div>
+                <h6 class="offcanvas-title fw-bold mb-0 text-dark" id="androidMenuBottomSheetLabel"><?= e($currentUser['name'] ?? 'Staff') ?></h6>
+                <div class="d-flex align-items-center gap-1">
+                    <span class="badge bg-primary-subtle text-primary" style="font-size: 0.65rem;"><?= e($currentUser['role_name'] ?? 'Staff') ?></span>
+                    <span class="text-muted small" style="font-size: 0.68rem;">&bull; <?= e($activeBranchName) ?></span>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-3 overflow-y-auto">
+        <div class="m3-app-grid">
+            <a href="<?= url('/dashboard') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-primary text-white">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                </div>
+                <span class="m3-app-label">Dashboard</span>
+            </a>
+
+            <?php if (\App\Core\Auth::hasPermission('pos.access')): ?>
+            <a href="<?= url('/pos') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-warning text-dark">
+                    <i class="bi bi-cart-check-fill"></i>
+                </div>
+                <span class="m3-app-label">Kasir POS</span>
+            </a>
+            <?php endif; ?>
+
+            <a href="<?= url('/orders') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-info text-white">
+                    <i class="bi bi-receipt"></i>
+                </div>
+                <span class="m3-app-label">Pesanan</span>
+            </a>
+
+            <?php if (\App\Core\Auth::hasPermission('production.access')): ?>
+            <a href="<?= url('/production') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-secondary text-white">
+                    <i class="bi bi-diagram-3-fill"></i>
+                </div>
+                <span class="m3-app-label">Produksi</span>
+            </a>
+            <?php endif; ?>
+
+            <?php if (\App\Core\Auth::hasPermission('delivery.access')): ?>
+            <a href="<?= url('/delivery') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-success text-white">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <span class="m3-app-label">Kurir</span>
+            </a>
+            <?php endif; ?>
+
+            <a href="<?= url('/customers') ?>" class="m3-app-item">
+                <div class="m3-app-icon" style="background: #8B5CF6; color: white;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <span class="m3-app-label">Pelanggan</span>
+            </a>
+
+            <a href="<?= url('/membership') ?>" class="m3-app-item">
+                <div class="m3-app-icon" style="background: #EC4899; color: white;">
+                    <i class="bi bi-star-fill"></i>
+                </div>
+                <span class="m3-app-label">Poin Member</span>
+            </a>
+
+            <a href="<?= url('/whatsapp') ?>" class="m3-app-item">
+                <div class="m3-app-icon" style="background: #25D366; color: white;">
+                    <i class="bi bi-whatsapp"></i>
+                </div>
+                <span class="m3-app-label">WhatsApp</span>
+            </a>
+
+            <?php if (\App\Core\Auth::hasPermission('inventory.access')): ?>
+            <a href="<?= url('/inventory') ?>" class="m3-app-item">
+                <div class="m3-app-icon" style="background: #0EA5E9; color: white;">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+                <span class="m3-app-label">Stok Barang</span>
+            </a>
+
+            <a href="<?= url('/machines') ?>" class="m3-app-item">
+                <div class="m3-app-icon" style="background: #64748B; color: white;">
+                    <i class="bi bi-gear-wide-connected"></i>
+                </div>
+                <span class="m3-app-label">Mesin Cuci</span>
+            </a>
+            <?php endif; ?>
+
+            <?php if (\App\Core\Auth::hasPermission('accounting.access') || \App\Core\Auth::hasRole(['super_admin', 'owner', 'accountant'])): ?>
+            <a href="<?= url('/accounting/cash') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-success text-white">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <span class="m3-app-label">Kas & Bank</span>
+            </a>
+
+            <a href="<?= url('/accounting/expenses') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-danger text-white">
+                    <i class="bi bi-arrow-down-circle-fill"></i>
+                </div>
+                <span class="m3-app-label">Biaya Beban</span>
+            </a>
+            <?php endif; ?>
+
+            <?php if (\App\Core\Auth::hasPermission('reports.view') || \App\Core\Auth::hasRole(['super_admin', 'owner', 'manager'])): ?>
+            <a href="<?= url('/reports') ?>" class="m3-app-item">
+                <div class="m3-app-icon" style="background: #F97316; color: white;">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <span class="m3-app-label">Laporan</span>
+            </a>
+            <?php endif; ?>
+
+            <a href="<?= url('/profile') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-dark text-white">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <span class="m3-app-label">Profil Saya</span>
+            </a>
+
+            <button type="button" class="m3-app-item border-0 bg-transparent" onclick="SimLaundry.promptInstall()">
+                <div class="m3-app-icon bg-success text-white">
+                    <i class="bi bi-android2"></i>
+                </div>
+                <span class="m3-app-label">Install App</span>
+            </button>
+
+            <form action="<?= url('/logout') ?>" method="POST" class="m3-app-item border-0 bg-transparent m-0 p-0" id="m3LogoutForm">
+                <?= csrf_field() ?>
+                <button type="submit" class="border-0 bg-transparent text-center p-0 w-100">
+                    <div class="m3-app-icon bg-danger-subtle text-danger">
+                        <i class="bi bi-power"></i>
+                    </div>
+                    <span class="m3-app-label text-danger">Keluar</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Notifikasi Mengambang Download / Install PWA Android -->
 <div id="pwaInstallBanner" class="pwa-install-banner d-none" role="alert" aria-live="polite">
