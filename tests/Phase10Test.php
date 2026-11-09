@@ -272,7 +272,7 @@ class Phase10Test
         }
 
         $manifest = json_decode(file_get_contents($manifestFile), true);
-        if (!$manifest || (($manifest['short_name'] ?? '') !== 'LaundryPro' && !str_contains($manifest['name'] ?? '', 'LaundryPro'))) {
+        if (!$manifest || (!in_array($manifest['short_name'] ?? '', ['SimLaundry', 'LaundryPro']) && !str_contains($manifest['name'] ?? '', 'SimLaundry') && !str_contains($manifest['name'] ?? '', 'LaundryPro'))) {
             throw new \Exception("manifest.json is invalid or name mismatch.");
         }
 

@@ -91,7 +91,7 @@ switch ($command) {
         break;
 
     default:
-        echo "LaundryPro CLI Console\n";
+        echo "SimLaundry CLI Console\n";
         echo "Perintah yang tersedia:\n";
         echo "  php console.php migrate          - Jalankan migrasi database\n";
         echo "  php console.php migrate:rollback - Rollback batch migrasi terakhir\n";

@@ -122,7 +122,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Nama Cabang / Outlet</label>
-                        <input type="text" class="form-control" name="name" placeholder="Misal: LaundryPro Dago Bandung" required>
+                        <input type="text" class="form-control" name="name" placeholder="Misal: SimLaundry Dago Bandung" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Nomor Telepon / WhatsApp</label>
@@ -130,7 +130,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Email Cabang</label>
-                        <input type="email" class="form-control" name="email" placeholder="cabang@laundrypro.id">
+                        <input type="email" class="form-control" name="email" placeholder="cabang@simlaundry.id">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Alamat Lengkap</label>

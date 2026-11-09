@@ -53,7 +53,7 @@ class PortalController extends Controller
         $branches = $this->db()->fetchAll("SELECT id, name FROM branches WHERE is_active = 1");
 
         $this->view('portal.register', [
-            'title' => 'Daftar Akun Pelanggan LaundryPro',
+            'title' => 'Daftar Akun Pelanggan SimLaundry',
             'branches' => $branches,
         ], 'layouts/portal');
     }

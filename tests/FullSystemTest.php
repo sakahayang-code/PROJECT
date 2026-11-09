@@ -30,7 +30,7 @@ class FullSystemTest
     public function runAll(): void
     {
         echo "====================================================================\n";
-        echo "   LAUNDRYPRO FULL SYSTEM END-TO-END REGRESSION & INTEGRATION TEST\n";
+        echo "   SIMLAUNDRY FULL SYSTEM END-TO-END REGRESSION & INTEGRATION TEST\n";
         echo "====================================================================\n\n";
 
         $branchId = 1;
@@ -449,7 +449,7 @@ class FullSystemTest
         $_POST = [
             'order_id' => (string)$orderId,
             'rating' => '5',
-            'review' => 'Pelayanan sangat cepat, pakaian wangi semerbak dan sangat rapi. Luar biasa LaundryPro!',
+            'review' => 'Pelayanan sangat cepat, pakaian wangi semerbak dan sangat rapi. Luar biasa SimLaundry!',
         ];
 
         ob_start();

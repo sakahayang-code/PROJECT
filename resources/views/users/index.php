@@ -188,7 +188,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Email</label>
-                        <input type="email" class="form-control" name="email" placeholder="email@laundrypro.id">
+                        <input type="email" class="form-control" name="email" placeholder="email@simlaundry.id">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Nomor WhatsApp</label>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= e($csrfToken ?? '') ?>">
-    <title><?= e($title ?? 'Portal Pelanggan') ?> — LaundryPro</title>
+    <title><?= e($title ?? 'Portal Pelanggan') ?> — SimLaundry</title>
 
     <link rel="icon" type="image/png" href="<?= asset('img/icon-192.png') ?>">
     <link rel="manifest" href="<?= url('manifest.json') ?>">
@@ -36,7 +36,7 @@
             <span class="rounded bg-white p-1 d-inline-flex shadow-sm" style="width: 32px; height: 32px;">
                 <img src="<?= asset('img/logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </span>
-            <span class="fw-bold fs-5 tracking-tight">LaundryPro <span class="badge bg-light text-primary small" style="font-size:0.65rem;">Customer Portal</span></span>
+            <span class="fw-bold fs-5 tracking-tight">SimLaundry <span class="badge bg-light text-primary small" style="font-size:0.65rem;">Customer Portal</span></span>
         </a>
         <div class="d-flex align-items-center gap-2">
             <?php if (\App\Core\Auth::checkCustomer()): ?>
@@ -72,7 +72,7 @@
 
 <footer class="portal-footer small text-center">
     <div class="container">
-        <div class="mb-2 fw-semibold text-white">LaundryPro Indonesia &bull; Smart Laundry Business System</div>
+        <div class="mb-2 fw-semibold text-white">SimLaundry Indonesia &bull; Smart Laundry Business System</div>
         <div>Layanan cuci higienis, bersih, wangi, dan tepat waktu untuk kenyamanan Anda.</div>
     </div>
 </footer>

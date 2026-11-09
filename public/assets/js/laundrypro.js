@@ -129,3 +129,5 @@ window.LaundryPro = {
 document.addEventListener('DOMContentLoaded', () => {
     LaundryPro.init();
 });
+
+window.SimLaundry = window.LaundryPro;

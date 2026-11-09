@@ -9,7 +9,7 @@
                             <i class="bi bi-award-fill me-1"></i> Member <?= e($customer['tier_name'] ?? 'Regular') ?>
                         </span>
                         <h3 class="fw-bold mb-1">Halo, <?= e($customer['name']) ?>!</h3>
-                        <p class="mb-0 text-white-50">Selamat datang di LaundryPro Customer Portal. Pantau cucian dan pesan penjemputan dari rumah dengan mudah.</p>
+                        <p class="mb-0 text-white-50">Selamat datang di SimLaundry Customer Portal. Pantau cucian dan pesan penjemputan dari rumah dengan mudah.</p>
                     </div>
                     <div class="col-12 col-md-4 text-md-end">
                         <a href="<?= url('/portal/create-order') ?>" class="btn btn-light text-primary fw-bold px-4 py-2 shadow-sm">

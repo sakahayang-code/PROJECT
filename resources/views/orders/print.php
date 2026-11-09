@@ -1,5 +1,5 @@
 <div class="text-center mb-2">
-    <h5 class="fw-bold mb-0 text-uppercase"><?= e($order['company_name'] ?: 'LAUNDRYPRO') ?></h5>
+    <h5 class="fw-bold mb-0 text-uppercase"><?= e($order['company_name'] ?: 'SIMLAUNDRY') ?></h5>
     <div style="font-size: 0.8em;"><?= e($order['branch_name']) ?></div>
     <div style="font-size: 0.75em;"><?= e($order['branch_address']) ?></div>
     <div style="font-size: 0.75em;">Telp/WA: <?= e($order['branch_phone']) ?></div>

@@ -1,6 +1,6 @@
 {
-  "name": "LaundryPro - Smart Laundry Business Management System",
-  "short_name": "LaundryPro",
+  "name": "SimLaundry - Smart Laundry Business Management System",
+  "short_name": "SimLaundry",
   "description": "Sistem Manajemen Laundry Multi-Cabang Modern & Terintegrasi",
   "start_url": "./",
   "display": "standalone",

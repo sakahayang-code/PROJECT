@@ -165,7 +165,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Email</label>
-                        <input type="email" class="form-control" name="email" placeholder="karyawan@laundrypro.id">
+                        <input type="email" class="form-control" name="email" placeholder="karyawan@simlaundry.id">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Gaji Pokok Bulanan (Rp)</label>

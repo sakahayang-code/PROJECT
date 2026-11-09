@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Nama Bisnis / Brand</label>
-                        <input type="text" name="name" class="form-control" value="<?= e($company['name'] ?? 'LaundryPro') ?>" required>
+                        <input type="text" name="name" class="form-control" value="<?= e($company['name'] ?? 'SimLaundry') ?>" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Tagline Bisnis</label>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Email Bisnis</label>
-                        <input type="email" name="email" class="form-control" value="<?= e($company['email'] ?? 'info@laundrypro.id') ?>">
+                        <input type="email" name="email" class="form-control" value="<?= e($company['email'] ?? 'info@simlaundry.id') ?>">
                     </div>
                     <div class="col-12">
                         <label class="form-label small fw-bold">Alamat Kantor Pusat</label>

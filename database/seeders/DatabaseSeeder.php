@@ -22,9 +22,9 @@ class DatabaseSeeder
         if (!$companyId) {
             $companyId = $this->db->insert('companies', [
                 'code' => 'CORP',
-                'name' => 'LaundryPro Indonesia',
+                'name' => 'SimLaundry Indonesia',
                 'tagline' => 'Smart Laundry Business Management System',
-                'email' => 'info@laundrypro.id',
+                'email' => 'info@simlaundry.id',
                 'phone' => '081234567890',
                 'address' => 'Jl. Jenderal Sudirman No. 100, Jakarta Pusat',
                 'currency' => 'IDR',
@@ -40,9 +40,9 @@ class DatabaseSeeder
             $branchPusat = $this->db->insert('branches', [
                 'company_id' => $companyId,
                 'code' => 'PST',
-                'name' => 'LaundryPro Cabang Pusat (Sudirman)',
+                'name' => 'SimLaundry Cabang Pusat (Sudirman)',
                 'phone' => '081211112222',
-                'email' => 'pusat@laundrypro.id',
+                'email' => 'pusat@simlaundry.id',
                 'address' => 'Jl. Jenderal Sudirman No. 100, Jakarta Pusat',
                 'is_main' => 1,
                 'is_active' => 1,
@@ -56,9 +56,9 @@ class DatabaseSeeder
             $branchBarat = $this->db->insert('branches', [
                 'company_id' => $companyId,
                 'code' => 'BRT',
-                'name' => 'LaundryPro Cabang Barat (Kebon Jeruk)',
+                'name' => 'SimLaundry Cabang Barat (Kebon Jeruk)',
                 'phone' => '081233334444',
-                'email' => 'barat@laundrypro.id',
+                'email' => 'barat@simlaundry.id',
                 'address' => 'Jl. Raya Kebon Jeruk No. 45, Jakarta Barat',
                 'is_main' => 0,
                 'is_active' => 1,
@@ -72,9 +72,9 @@ class DatabaseSeeder
             $branchSelatan = $this->db->insert('branches', [
                 'company_id' => $companyId,
                 'code' => 'SLT',
-                'name' => 'LaundryPro Cabang Selatan (Fatmawati)',
+                'name' => 'SimLaundry Cabang Selatan (Fatmawati)',
                 'phone' => '081255556666',
-                'email' => 'selatan@laundrypro.id',
+                'email' => 'selatan@simlaundry.id',
                 'address' => 'Jl. RS Fatmawati No. 88, Jakarta Selatan',
                 'is_main' => 0,
                 'is_active' => 1,
@@ -439,8 +439,8 @@ class DatabaseSeeder
         // 10. Payment Methods
         $payMethods = [
             ['code' => 'CASH', 'name' => 'Uang Tunai (Cash)', 'category' => 'cash'],
-            ['code' => 'BCA',  'name' => 'Transfer Bank BCA', 'category' => 'transfer', 'account_number' => '123-456-7890', 'account_holder' => 'PT LaundryPro Mandiri'],
-            ['code' => 'MANDIRI', 'name' => 'Transfer Bank Mandiri', 'category' => 'transfer', 'account_number' => '101-00-1234567-8', 'account_holder' => 'PT LaundryPro Mandiri'],
+            ['code' => 'BCA',  'name' => 'Transfer Bank BCA', 'category' => 'transfer', 'account_number' => '123-456-7890', 'account_holder' => 'PT SimLaundry Mandiri'],
+            ['code' => 'MANDIRI', 'name' => 'Transfer Bank Mandiri', 'category' => 'transfer', 'account_number' => '101-00-1234567-8', 'account_holder' => 'PT SimLaundry Mandiri'],
             ['code' => 'QRIS', 'name' => 'QRIS Realtime / Payment Gateway', 'category' => 'qris', 'config' => json_encode(['provider' => 'mock_or_midtrans', 'midtrans_merchant_id' => 'G123456789'])],
             ['code' => 'DEPOSIT', 'name' => 'Saldo Deposit Pelanggan', 'category' => 'deposit'],
         ];
@@ -514,7 +514,7 @@ class DatabaseSeeder
             [
                 'trigger_event' => 'order_received',
                 'title' => 'Nota Pesanan Diterima',
-                'message_template' => "Halo Kak {customer_name},\nPesanan laundry Anda dengan No. Nota *{order_no}* telah kami terima di {branch_name}.\n\nTotal Tagihan: *{grand_total}*\nStatus Bayar: *{payment_status}*\nEstimasi Selesai: *{est_completion}*\n\nPantau status cucian Anda secara online melalui tautan berikut:\n{tracking_url}\n\nTerima kasih telah mempercayakan laundry Anda kepada LaundryPro!",
+                'message_template' => "Halo Kak {customer_name},\nPesanan laundry Anda dengan No. Nota *{order_no}* telah kami terima di {branch_name}.\n\nTotal Tagihan: *{grand_total}*\nStatus Bayar: *{payment_status}*\nEstimasi Selesai: *{est_completion}*\n\nPantau status cucian Anda secara online melalui tautan berikut:\n{tracking_url}\n\nTerima kasih telah mempercayakan laundry Anda kepada SimLaundry!",
                 'variables' => '{customer_name},{order_no},{branch_name},{grand_total},{payment_status},{est_completion},{tracking_url}',
             ],
             [
@@ -795,7 +795,7 @@ class DatabaseSeeder
                 'company_id' => $companyId,
                 'branch_id' => null,
                 'paper_size' => '58mm',
-                'header_text' => "LAUNDRYPRO INDONESIA\nBersih, Wangi, Higienis & Tepat Waktu",
+                'header_text' => "SIMLAUNDRY INDONESIA\nBersih, Wangi, Higienis & Tepat Waktu",
                 'footer_text' => "Barang yang tidak diambil dalam 30 hari di luar tanggung jawab kami.\nKomplain maksimal 1x24 jam sejak barang diserahkan disertai nota.",
                 'show_logo' => 1,
                 'show_qr' => 1,
@@ -820,7 +820,7 @@ class DatabaseSeeder
 
         // 19. Initial System Settings
         $appSettings = [
-            ['key' => 'app_name', 'value' => 'LaundryPro', 'group_name' => 'general', 'description' => 'Nama Aplikasi'],
+            ['key' => 'app_name', 'value' => 'SimLaundry', 'group_name' => 'general', 'description' => 'Nama Aplikasi'],
             ['key' => 'app_tagline', 'value' => 'Smart Laundry Business Management System', 'group_name' => 'general', 'description' => 'Tagline Aplikasi'],
             ['key' => 'enable_qris_gateway', 'value' => '1', 'group_name' => 'payment', 'description' => 'Aktifkan Gateway QRIS'],
             ['key' => 'enable_whatsapp_notifications', 'value' => '1', 'group_name' => 'whatsapp', 'description' => 'Aktifkan Otomatisasi Notifikasi WhatsApp'],

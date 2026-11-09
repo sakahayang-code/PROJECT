@@ -88,7 +88,7 @@ class SettingController extends Controller
             $this->db()->insert('receipt_settings', [
                 'company_id' => $companyId,
                 'paper_size' => '58mm',
-                'header_text' => "LAUNDRYPRO INDONESIA\nBersih, Wangi & Tepat Waktu",
+                'header_text' => "SIMLAUNDRY INDONESIA\nBersih, Wangi & Tepat Waktu",
                 'footer_text' => "Barang yang tidak diambil dalam 30 hari di luar tanggung jawab kami.",
                 'show_logo' => 1,
                 'show_qr' => 1,

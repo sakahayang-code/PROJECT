@@ -27,7 +27,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold">Header Teks (Nama Usaha & Slogan)</label>
-                        <textarea name="header_text" id="receiptHeader" class="form-control font-monospace small" rows="3" oninput="updateReceiptPreview()"><?= e($receipt['header_text'] ?? "LAUNDRYPRO INDONESIA\nBersih, Wangi & Tepat Waktu") ?></textarea>
+                        <textarea name="header_text" id="receiptHeader" class="form-control font-monospace small" rows="3" oninput="updateReceiptPreview()"><?= e($receipt['header_text'] ?? "SIMLAUNDRY INDONESIA\nBersih, Wangi & Tepat Waktu") ?></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -39,7 +39,7 @@
                         <label class="form-label small fw-bold">Elemen Tampilan Struk</label>
                         <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" name="show_logo" value="1" id="switchShowLogo" <?= !empty($receipt['show_logo']) ? 'checked' : '' ?> onchange="updateReceiptPreview()">
-                            <label class="form-check-label small" for="switchShowLogo">Tampilkan Logo LaundryPro di Atas Struk</label>
+                            <label class="form-check-label small" for="switchShowLogo">Tampilkan Logo SimLaundry di Atas Struk</label>
                         </div>
                         <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" name="show_qr" value="1" id="switchShowQr" <?= !empty($receipt['show_qr']) ? 'checked' : '' ?> onchange="updateReceiptPreview()">
@@ -65,8 +65,8 @@
             </div>
             <div class="card-body bg-light p-3 d-flex justify-content-center">
                 <div id="previewReceiptCard" class="bg-white p-3 border shadow-sm font-monospace text-dark small text-center" style="width: 260px; font-size: 0.75rem; line-height: 1.2;">
-                    <div id="previewLogo" class="fw-bold mb-1"><i class="bi bi-water text-primary"></i> LAUNDRYPRO</div>
-                    <div id="previewHeaderText" style="white-space: pre-wrap;" class="fw-semibold mb-2">LAUNDRYPRO INDONESIA</div>
+                    <div id="previewLogo" class="fw-bold mb-1"><i class="bi bi-water text-primary"></i> SIMLAUNDRY</div>
+                    <div id="previewHeaderText" style="white-space: pre-wrap;" class="fw-semibold mb-2">SIMLAUNDRY INDONESIA</div>
                     <div class="border-top border-bottom border-dark border-dashed py-1 mb-2 text-start">
                         <div>Nota : LP-PST-20261109-0001</div>
                         <div>Tgl  : <?= date('d/m/Y H:i') ?></div>

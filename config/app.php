@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'LaundryPro',
+    'name' => 'SimLaundry',
     'tagline' => 'Smart Laundry Business Management System',
     'version' => '1.0.0',
     'env' => 'production',

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'laundrypro-v1';
+const CACHE_NAME = 'simlaundry-v1';
 const STATIC_ASSETS = [
     './',
     './offline.html',

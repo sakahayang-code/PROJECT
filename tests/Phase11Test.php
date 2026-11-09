@@ -137,10 +137,10 @@ class Phase11Test
         $newPhone = '021-99887766';
         $newTax = 11.5;
         $_POST = [
-            'name' => 'LaundryPro Group Indonesia',
+            'name' => 'SimLaundry Group Indonesia',
             'tagline' => 'Solusi Cerdas Laundry Modern',
             'phone' => $newPhone,
-            'email' => 'contact@laundrypro.id',
+            'email' => 'contact@simlaundry.id',
             'address' => 'Gedung Wisma Antigravity Lt. 8, Jakarta',
             'tax_rate_percent' => (string)$newTax,
         ];
@@ -150,7 +150,7 @@ class Phase11Test
         ob_end_clean();
 
         $company = $this->db->fetch("SELECT * FROM companies WHERE id = 1");
-        if ($company['phone'] !== $newPhone || $company['name'] !== 'LaundryPro Group Indonesia') {
+        if ($company['phone'] !== $newPhone || $company['name'] !== 'SimLaundry Group Indonesia') {
             throw new \Exception("Company profile update was not persisted to database.");
         }
 
@@ -162,7 +162,7 @@ class Phase11Test
         // 2. Update Receipt Settings
         $_POST = [
             'paper_size' => '80mm',
-            'header_text' => "LAUNDRYPRO FLAGSHIP\nBersih Sempurna & Tepat Waktu",
+            'header_text' => "SIMLAUNDRY FLAGSHIP\nBersih Sempurna & Tepat Waktu",
             'footer_text' => "Simpan nota ini sebagai bukti sah pengambilan cucian.",
             'show_logo' => '1',
             'show_qr' => '1',

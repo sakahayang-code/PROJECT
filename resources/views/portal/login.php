@@ -4,7 +4,7 @@
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm p-2 mb-2" style="width: 72px; height: 72px;">
-                        <img src="<?= asset('img/logo.png') ?>" alt="LaundryPro Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="<?= asset('img/logo.png') ?>" alt="SimLaundry Logo" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <h4 class="fw-bold text-dark">Portal Pelanggan</h4>
                     <p class="text-muted small">Masuk untuk memantau cucian, bayar pesanan, dan gunakan poin diskon.</p>

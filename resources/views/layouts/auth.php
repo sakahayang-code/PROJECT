@@ -50,7 +50,7 @@
     <div class="auth-card">
         <div class="auth-header">
             <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-3 shadow p-2" style="width: 68px; height: 68px;">
-                <img src="<?= asset('img/logo.png') ?>" alt="LaundryPro Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="<?= asset('img/logo.png') ?>" alt="SimLaundry Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <h4 class="fw-bold mb-1"><?= e($appConfig['name']) ?></h4>
             <div class="small opacity-75"><?= e($appConfig['tagline']) ?></div>

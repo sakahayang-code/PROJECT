@@ -1,7 +1,7 @@
 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-1">
-            <?= $isOwnerOrSuper ? 'Ringkasan Konsolidasi LaundryPro' : 'Dashboard Operasional Cabang' ?>
+            <?= $isOwnerOrSuper ? 'Ringkasan Konsolidasi SimLaundry' : 'Dashboard Operasional Cabang' ?>
         </h4>
         <div class="text-muted small">
             Pantauan kinerja penjualan, antrean produksi, dan keuangan terkini secara realtime.

@@ -5,7 +5,7 @@
                 <h5 class="fw-bold m-0"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i>Pesan Penjemputan Cucian (Pickup Request)</h5>
             </div>
             <div class="card-body p-4">
-                <p class="text-muted small mb-4">Kurir LaundryPro akan datang menjemput pakaian kotor ke lokasi Anda sesuai jadwal yang dipilih.</p>
+                <p class="text-muted small mb-4">Kurir SimLaundry akan datang menjemput pakaian kotor ke lokasi Anda sesuai jadwal yang dipilih.</p>
 
                 <form method="POST" action="<?= url('/portal/pickup/create') ?>" class="row g-3">
                     <?= csrf_field() ?>

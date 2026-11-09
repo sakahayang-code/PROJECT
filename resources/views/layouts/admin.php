@@ -263,8 +263,8 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('<?= url('service-worker.js') ?>')
-            .then(reg => console.log('LaundryPro PWA ServiceWorker registered'))
-            .catch(err => console.log('LaundryPro PWA ServiceWorker failed:', err));
+            .then(reg => console.log('SimLaundry PWA ServiceWorker registered'))
+            .catch(err => console.log('SimLaundry PWA ServiceWorker failed:', err));
     });
 }
 </script>

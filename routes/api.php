@@ -8,7 +8,7 @@ Router::group(['prefix' => '/api'], function() {
     Router::get('/health', function() {
         Response::json([
             'status' => 'healthy',
-            'app' => 'LaundryPro',
+            'app' => 'SimLaundry',
             'timestamp' => date('Y-m-d H:i:s'),
         ]);
     });
