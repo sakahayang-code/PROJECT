@@ -558,12 +558,22 @@ body {
    Material Design 3 Modal Bottom Sheet (Native Android App Drawer)
    ========================================================================== */
 .m3-bottom-sheet {
+    height: 78vh !important;
+    max-height: 85vh !important;
     border-top-left-radius: 28px !important;
     border-top-right-radius: 28px !important;
     border: none !important;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2) !important;
-    max-height: 85vh !important;
-    background: #FFFFFF;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25) !important;
+    background: #FFFFFF !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.m3-bottom-sheet .offcanvas-body {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 24px) + 60px) !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 .m3-drag-handle {
@@ -572,6 +582,7 @@ body {
     border-radius: 3px;
     background: #CBD5E1;
     margin: 10px auto 16px;
+    flex-shrink: 0;
 }
 
 .m3-app-grid {
@@ -579,7 +590,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 16px 8px;
     text-align: center;
-    padding: 0 4px 16px;
+    padding: 0 4px 24px;
 }
 
 .m3-app-item {

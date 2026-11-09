@@ -123,6 +123,88 @@
         [data-bs-theme="dark"] .android-nav-item .nav-label {
             color: #94A3B8 !important;
         }
+
+        /* Critical Native Android Modal Bottom Sheet (App Drawer) */
+        .m3-bottom-sheet {
+            height: 78vh !important;
+            max-height: 85vh !important;
+            border-top-left-radius: 28px !important;
+            border-top-right-radius: 28px !important;
+            border: none !important;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25) !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        .m3-drag-handle {
+            width: 40px !important;
+            height: 4.5px !important;
+            border-radius: 3px !important;
+            background: #CBD5E1 !important;
+            margin: 10px auto 14px !important;
+            flex-shrink: 0 !important;
+        }
+        .m3-bottom-sheet .offcanvas-body {
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
+            padding: 12px 16px calc(env(safe-area-inset-bottom, 24px) + 60px) !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        .m3-app-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 16px 8px !important;
+            text-align: center !important;
+            padding-bottom: 24px !important;
+        }
+        .m3-app-item {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            text-decoration: none !important;
+            color: #1E293B !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            transition: transform 0.15s ease !important;
+        }
+        .m3-app-item:active {
+            transform: scale(0.88) !important;
+        }
+        .m3-app-icon {
+            width: 52px !important;
+            height: 52px !important;
+            border-radius: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.45rem !important;
+            margin-bottom: 6px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+        }
+        .m3-app-label {
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            line-height: 1.2 !important;
+            max-width: 72px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+        }
+        [data-bs-theme="dark"] .m3-bottom-sheet {
+            background: #111C2E !important;
+        }
+        [data-bs-theme="dark"] .m3-drag-handle {
+            background: #334155 !important;
+        }
+        [data-bs-theme="dark"] .m3-app-item {
+            color: #F1F5F9 !important;
+        }
+        [data-bs-theme="dark"] .m3-app-label {
+            color: #CBD5E1 !important;
+        }
     </style>
 </head>
 <body>
@@ -434,7 +516,7 @@
 </nav>
 
 <!-- Native Android Material 3 Modal Bottom Sheet (Menu Drawer) -->
-<div class="offcanvas offcanvas-bottom m3-bottom-sheet" tabindex="-1" id="androidMenuBottomSheet" aria-labelledby="androidMenuBottomSheetLabel">
+<div class="offcanvas offcanvas-bottom m3-bottom-sheet" tabindex="-1" id="androidMenuBottomSheet" aria-labelledby="androidMenuBottomSheetLabel" style="height: 80vh !important; max-height: 85vh !important;">
     <div class="m3-drag-handle"></div>
     <div class="offcanvas-header pt-0 pb-2 px-3 border-bottom d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
@@ -451,7 +533,7 @@
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body p-3 overflow-y-auto">
+    <div class="offcanvas-body p-3 overflow-y-auto" style="padding-bottom: calc(env(safe-area-inset-bottom, 24px) + 70px) !important;">
         <div class="m3-app-grid">
             <a href="<?= url('/dashboard') ?>" class="m3-app-item">
                 <div class="m3-app-icon bg-primary text-white">
