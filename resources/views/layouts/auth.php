@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="<?= e($csrfToken ?? '') ?>">
     <title><?= e($title ?? 'Login') ?> — <?= e($appConfig['name']) ?></title>
     
+    <link rel="icon" type="image/png" href="<?= asset('img/icon-192.png') ?>">
     <link rel="manifest" href="<?= url('manifest.json') ?>">
     <meta name="theme-color" content="#13AFA8">
 
@@ -48,8 +49,8 @@
 <div class="auth-container">
     <div class="auth-card">
         <div class="auth-header">
-            <div class="d-inline-flex align-items-center justify-content-center bg-white text-primary rounded-circle mb-3 shadow" style="width: 54px; height: 54px;">
-                <i class="bi bi-water fs-2"></i>
+            <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-3 shadow p-2" style="width: 68px; height: 68px;">
+                <img src="<?= asset('img/logo.png') ?>" alt="LaundryPro Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <h4 class="fw-bold mb-1"><?= e($appConfig['name']) ?></h4>
             <div class="small opacity-75"><?= e($appConfig['tagline']) ?></div>

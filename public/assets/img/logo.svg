@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="laundryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5D4" />
+      <stop offset="50%" stop-color="#13AFA8" />
+      <stop offset="100%" stop-color="#0B6B67" />
+    </linearGradient>
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38E8DA" />
+      <stop offset="100%" stop-color="#0E8A84" />
+    </linearGradient>
+    <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00E5D4" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring (Washer Body) -->
+  <circle cx="100" cy="110" r="70" fill="none" stroke="url(#laundryGrad)" stroke-width="14" stroke-linecap="round" />
+
+  <!-- Inner Drum Rim -->
+  <circle cx="100" cy="110" r="54" fill="none" stroke="url(#laundryGrad)" stroke-width="5" opacity="0.85" />
+
+  <!-- Main Water Droplet inside Drum -->
+  <path d="M108 86 C108 86 122 108 122 120 C122 131 113 140 102 140 C91 140 82 131 82 120 C82 108 108 86 108 86 Z" fill="url(#waterGrad)" filter="url(#glow)"/>
+
+  <!-- Water Highlight -->
+  <path d="M114 116 C114 123 109 130 102 131 C103 129 105 125 105 120 C105 113 100 107 98 102 C106 107 114 111 114 116 Z" fill="#FFFFFF" opacity="0.6"/>
+
+  <!-- Bubbles inside Drum -->
+  <circle cx="88" cy="100" r="7.5" fill="url(#laundryGrad)" />
+  <circle cx="120" cy="98" r="5.5" fill="url(#laundryGrad)" />
+  <circle cx="128" cy="116" r="8" fill="url(#laundryGrad)" />
+
+  <!-- Sparkle Stars Top Right -->
+  <!-- Big Star -->
+  <path d="M136 40 Q136 50 146 50 Q136 50 136 60 Q136 50 126 50 Q136 50 136 40 Z" fill="#00E5D4" filter="url(#glow)"/>
+  <!-- Medium Star -->
+  <path d="M156 30 Q156 36 162 36 Q156 36 156 42 Q156 36 150 36 Q156 36 156 30 Z" fill="#38E8DA"/>
+</svg>

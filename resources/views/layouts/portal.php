@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="<?= e($csrfToken ?? '') ?>">
     <title><?= e($title ?? 'Portal Pelanggan') ?> — LaundryPro</title>
 
+    <link rel="icon" type="image/png" href="<?= asset('img/icon-192.png') ?>">
     <link rel="manifest" href="<?= url('manifest.json') ?>">
     <meta name="theme-color" content="#13AFA8">
 
@@ -32,7 +33,9 @@
 <header class="portal-header">
     <div class="container d-flex align-items-center justify-content-between">
         <a href="<?= url('/portal') ?>" class="text-white text-decoration-none d-flex align-items-center gap-2">
-            <span class="rounded bg-white text-primary p-1 d-inline-flex"><i class="bi bi-water fs-5"></i></span>
+            <span class="rounded bg-white p-1 d-inline-flex shadow-sm" style="width: 32px; height: 32px;">
+                <img src="<?= asset('img/logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+            </span>
             <span class="fw-bold fs-5 tracking-tight">LaundryPro <span class="badge bg-light text-primary small" style="font-size:0.65rem;">Customer Portal</span></span>
         </a>
         <div class="d-flex align-items-center gap-2">

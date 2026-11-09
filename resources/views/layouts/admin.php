@@ -7,6 +7,7 @@
     <title><?= e($title ?? 'Dashboard') ?> — <?= e($appConfig['name']) ?></title>
     
     <!-- PWA Manifest & Icons -->
+    <link rel="icon" type="image/png" href="<?= asset('img/icon-192.png') ?>">
     <link rel="manifest" href="<?= url('manifest.json') ?>">
     <meta name="theme-color" content="#13AFA8">
 
@@ -23,8 +24,8 @@
     <!-- Sidebar Navigation -->
     <aside class="app-sidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo">
-                <i class="bi bi-water"></i>
+            <div class="brand-logo p-1 bg-white rounded-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <img src="<?= asset('img/logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <div>
                 <div class="brand-text"><?= e($appConfig['name']) ?></div>
