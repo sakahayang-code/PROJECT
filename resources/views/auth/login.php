@@ -19,7 +19,7 @@
 
     <div class="d-grid mb-3">
         <button type="submit" class="btn btn-primary py-2 fw-semibold">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Dashboard
+            <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
         </button>
     </div>
 </form>
