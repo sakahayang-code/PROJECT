@@ -25,7 +25,7 @@ class MembershipController extends Controller
 
         // Recent loyalty transactions
         $transactions = $this->db()->fetchAll(
-            "SELECT lt.*, c.name AS customer_name, c.phone AS customer_phone, c.code AS customer_code
+            "SELECT lt.*, c.name AS customer_name, c.whatsapp AS customer_phone, c.whatsapp AS phone, c.code AS customer_code
              FROM loyalty_transactions lt
              JOIN customers c ON lt.customer_id = c.id
              ORDER BY lt.id DESC

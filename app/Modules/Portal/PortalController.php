@@ -201,7 +201,7 @@ class PortalController extends Controller
              FROM services s
              JOIN service_categories sc ON s.category_id = sc.id
              WHERE s.is_active = 1
-             ORDER BY s.is_kiloan DESC, s.name ASC
+             ORDER BY (CASE WHEN s.unit_type = 'kg' THEN 1 ELSE 0 END) DESC, s.name ASC
              LIMIT 6"
         );
 
@@ -247,7 +247,7 @@ class PortalController extends Controller
 
         $branches = $this->db()->fetchAll("SELECT id, name, address, phone FROM branches WHERE is_active = 1");
         $addresses = $this->db()->fetchAll("SELECT * FROM customer_addresses WHERE customer_id = :cid", [':cid' => $customerId]);
-        $services = $this->db()->fetchAll("SELECT * FROM services WHERE is_active = 1 ORDER BY is_kiloan DESC, name ASC");
+        $services = $this->db()->fetchAll("SELECT * FROM services WHERE is_active = 1 ORDER BY (CASE WHEN unit_type = 'kg' THEN 1 ELSE 0 END) DESC, name ASC");
 
         $this->view('portal.create_order', [
             'title' => 'Pesan Laundry & Permintaan Penjemputan',

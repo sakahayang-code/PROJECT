@@ -52,7 +52,7 @@ class WhatsAppController extends Controller
             'failed' => (int)$this->db()->fetchColumn("SELECT COUNT(*) FROM whatsapp_queue WHERE status = 'failed'"),
         ];
 
-        $customers = $this->db()->fetchAll("SELECT id, name, phone, whatsapp FROM customers WHERE is_active = 1 ORDER BY name ASC LIMIT 100");
+        $customers = $this->db()->fetchAll("SELECT id, name, whatsapp, whatsapp AS phone FROM customers WHERE status = 'active' ORDER BY name ASC LIMIT 100");
 
         $this->view('whatsapp.index', [
             'title' => 'Integrasi & Antrean WhatsApp',

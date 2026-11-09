@@ -50,7 +50,7 @@ class DeliveryController extends Controller
         }
 
         $requests = $this->db()->fetchAll(
-            "SELECT dr.*, c.name AS customer_name, c.phone AS customer_phone,
+            "SELECT dr.*, c.name AS customer_name, c.whatsapp AS customer_phone, c.whatsapp AS phone,
                     o.order_no, o.grand_total, o.payment_status,
                     u.name AS courier_name, b.name AS branch_name
              FROM delivery_requests dr
@@ -71,7 +71,7 @@ class DeliveryController extends Controller
         );
 
         $branches = $this->db()->fetchAll("SELECT id, name FROM branches WHERE is_active = 1");
-        $customers = $this->db()->fetchAll("SELECT id, code, name, phone, address FROM customers WHERE is_active = 1 ORDER BY name ASC LIMIT 100");
+        $customers = $this->db()->fetchAll("SELECT id, code, name, whatsapp AS phone, whatsapp, address FROM customers WHERE status = 'active' ORDER BY name ASC LIMIT 100");
 
         // Summary counts
         $counts = [
@@ -367,7 +367,7 @@ class DeliveryController extends Controller
         }
 
         $tasks = $this->db()->fetchAll(
-            "SELECT dr.*, c.name AS customer_name, c.phone AS customer_phone,
+            "SELECT dr.*, c.name AS customer_name, c.whatsapp AS customer_phone, c.whatsapp AS phone,
                     o.order_no, o.grand_total, o.payment_status,
                     b.name AS branch_name
              FROM delivery_requests dr
