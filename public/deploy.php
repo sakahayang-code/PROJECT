@@ -112,9 +112,84 @@ try {
             }
         }
     } else {
-        $status = 'exec_disabled';
-        $output[] = 'Fungsi exec() & shell_exec() dinonaktifkan oleh provider hosting Anda.';
-        $output[] = 'Gunakan metode GitHub Actions FTP Deploy untuk auto-update otomatis 100%.';
+        // Pure PHP Auto-Update Fallback (No exec, no git binary required)
+        $output[] = 'Mode fallback Pure-PHP diaktifkan (exec/shell_exec dinonaktifkan hosting).';
+        
+        $tarGzUrl = 'https://codeload.github.com/sakahayang-code/PROJECT/tar.gz/refs/heads/main';
+        $tmpDir = sys_get_temp_dir();
+        $tmpTarGz = $tmpDir . '/simlaundry_' . time() . '.tar.gz';
+        $tmpTar = $tmpDir . '/simlaundry_' . time() . '.tar';
+        $extractDir = $tmpDir . '/simlaundry_extract_' . time();
+        
+        $ch = curl_init($tarGzUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'SimLaundry-Deployer');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        $archiveData = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode === 200 && !empty($archiveData)) {
+            file_put_contents($tmpTarGz, $archiveData);
+            $phar = new PharData($tmpTarGz);
+            $phar->decompress();
+            $tar = new PharData($tmpTar);
+            $tar->extractTo($extractDir, null, true);
+            
+            $subdirs = glob($extractDir . '/*');
+            $sourceDir = $subdirs[0] ?? null;
+            
+            if ($sourceDir && is_dir($sourceDir)) {
+                $targetDir = is_dir('/home/mulw1713/public_html/laundry') ? '/home/mulw1713/public_html/laundry' : (is_dir(dirname(__DIR__) . '/app') ? dirname(__DIR__) : __DIR__);
+                
+                // Exclude sensitive files from being overwritten
+                $excludes = ['database/laundrypro.sqlite', '.env', 'storage/logs', 'storage/backups', '.git', '.github'];
+                
+                $copyFunc = function($src, $dst, $excludes, &$copyFunc) use (&$output) {
+                    $count = 0;
+                    $dir = opendir($src);
+                    @mkdir($dst, 0755, true);
+                    while (false !== ($file = readdir($dir))) {
+                        if ($file === '.' || $file === '..') continue;
+                        $srcPath = $src . '/' . $file;
+                        $dstPath = $dst . '/' . $file;
+                        
+                        $skip = false;
+                        foreach ($excludes as $ex) {
+                            if (str_ends_with($dstPath, $ex) || str_contains($dstPath, '/' . $ex . '/')) {
+                                $skip = true;
+                                break;
+                            }
+                        }
+                        if ($skip) continue;
+                        
+                        if (is_dir($srcPath)) {
+                            $count += $copyFunc($srcPath, $dstPath, $excludes, $copyFunc);
+                        } else {
+                            if (@copy($srcPath, $dstPath)) {
+                                $count++;
+                            }
+                        }
+                    }
+                    closedir($dir);
+                    return $count;
+                };
+                
+                $copied = $copyFunc($sourceDir, $targetDir, $excludes, $copyFunc);
+                $status = 'success';
+                $output[] = "Sinkronisasi berhasil: {$copied} file diperbarui ke {$targetDir}.";
+            } else {
+                $status = 'error';
+                $output[] = 'Gagal menemukan direktori ekstraksi.';
+            }
+            
+            @unlink($tmpTarGz);
+            @unlink($tmpTar);
+        } else {
+            $status = 'error';
+            $output[] = "Gagal mengunduh arsip dari GitHub (HTTP code {$httpCode}).";
+        }
     }
 } catch (\Throwable $e) {
     $status = 'warning';
