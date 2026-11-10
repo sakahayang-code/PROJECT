@@ -73,3 +73,10 @@ if (!function_exists('storage_path')) {
         return base_path('storage/' . ltrim($path, '/'));
     }
 }
+
+if (!function_exists('public_path')) {
+    function public_path(string $path = ''): string {
+        return base_path('public/' . ltrim($path, '/'));
+    }
+}
+

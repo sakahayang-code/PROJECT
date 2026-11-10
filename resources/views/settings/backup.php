@@ -46,14 +46,32 @@
                     </tr>
                 </table>
 
-                <form method="POST" action="<?= url('/settings/backup/create') ?>" onsubmit="return confirm('Buat snapshot cadangan database saat ini?')">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-success w-100 py-2">
-                        <i class="bi bi-camera-fill me-2"></i> Buat Snapshot Backup Sekarang
-                    </button>
-                </form>
-                <div class="form-text small text-center mt-2 text-muted">
-                    Snapshot dibuat langsung menggunakan perintah aman SQLite <code>VACUUM INTO</code> tanpa menghentikan aktivitas kasir.
+                <div class="d-grid gap-2 mb-3">
+                    <form method="POST" action="<?= url('/settings/backup/create') ?>" onsubmit="return confirm('Buat snapshot cadangan database saat ini?')">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-success w-100 py-2">
+                            <i class="bi bi-camera-fill me-2"></i> Buat Snapshot Backup Sekarang
+                        </button>
+                    </form>
+                    
+                    <a href="<?= url('/settings/backup/archive') ?>" class="btn btn-primary py-2 text-start d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-file-earmark-zip-fill me-2"></i> Unduh Full Backup (.ZIP / .TAR.GZ)</span>
+                        <span class="badge bg-white text-primary">DB + Uploads</span>
+                    </a>
+
+                    <a href="<?= url('/settings/backup/export-json') ?>" class="btn btn-outline-info py-2 text-start d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-filetype-json me-2"></i> Ekspor Data Master (JSON Portable)</span>
+                        <span class="badge bg-info-subtle text-info">Semua Tabel</span>
+                    </a>
+                </div>
+
+                <div class="alert alert-success-subtle border-success-subtle p-2.5 mb-0 small">
+                    <div class="fw-bold text-success mb-1"><i class="bi bi-shield-lock-fill me-1"></i> Data Armor Protection Aktif</div>
+                    <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.8rem;">
+                        <li><strong>Kebal Update:</strong> Database & folder uploads tidak akan pernah tertimpa saat update aplikasi.</li>
+                        <li><strong>Auto-Snapshot:</strong> Snapshot cadangan otomatis dibuat sebelum deployment dan sebelum migrasi.</li>
+                        <li><strong>Akses Terkunci:</strong> File database SQLite dilindungi oleh <code>.htaccess</code> dari akses publik.</li>
+                    </ul>
                 </div>
             </div>
         </div>

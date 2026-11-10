@@ -154,6 +154,8 @@ Router::group(['middleware' => [AuthMiddleware::class]], function() {
     Router::post('/settings/receipt', [\App\Modules\Settings\SettingController::class, 'saveReceipt'], [CsrfMiddleware::class]);
     Router::get('/settings/backup', [\App\Modules\Settings\SettingController::class, 'backup']);
     Router::post('/settings/backup/create', [\App\Modules\Settings\SettingController::class, 'createBackup'], [CsrfMiddleware::class]);
+    Router::get('/settings/backup/archive', [\App\Modules\Settings\SettingController::class, 'downloadFullArchive']);
+    Router::get('/settings/backup/export-json', [\App\Modules\Settings\SettingController::class, 'exportJson']);
     Router::get('/settings/backup/download/{file}', [\App\Modules\Settings\SettingController::class, 'downloadBackup']);
     Router::post('/settings/backup/restore', [\App\Modules\Settings\SettingController::class, 'restoreBackup'], [CsrfMiddleware::class]);
     Router::get('/settings/logs', [\App\Modules\Settings\SettingController::class, 'logs']);

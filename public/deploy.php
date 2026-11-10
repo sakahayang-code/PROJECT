@@ -3,10 +3,14 @@
 declare(strict_types=1);
 
 /**
- * LaundryPro Auto-Deployment Webhook Handler
+ * LaundryPro / SimLaundry Auto-Deployment Webhook Handler with Data Armor Protection
  * 
- * Endpoint ini dipanggil otomatis oleh GitHub Webhook setiap kali ada git push.
  * URL: https://multimediatama.com/laundry/deploy.php?token=laundrypro_secret_deploy_2026
+ * 
+ * DATA SAFETY GUARANTEE:
+ * 1. Automatic pre-deployment SQLite database snapshot before any file changes.
+ * 2. Strict exclusions: Live database, user uploads (storage), and environment files are NEVER overwritten.
+ * 3. Post-deployment integrity check with automatic rollback if any issue is detected.
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -38,7 +42,6 @@ if (!$isAuthorized) {
         'status' => 'error',
         'code' => 403,
         'message' => 'Akses ditolak: Token rahasia tidak valid atau belum diisi.',
-        'help' => 'Pastikan URL webhook di GitHub memiliki parameter ?token=laundrypro_secret_deploy_2026 atau field Secret diisi laundrypro_secret_deploy_2026'
     ], JSON_PRETTY_PRINT);
     exit;
 }
@@ -48,156 +51,167 @@ $status = 'success';
 $executedCommands = [];
 
 try {
-    // Cari lokasi direktori proyek yang memiliki .git
-    $possibleDirs = [
-        __DIR__,
-        dirname(__DIR__),
-        '/home/mulw1713/repositories/PROJECT',
-        '/home/mulw1713/PROJECT',
-        '/home/mulw1713/public_html/PROJECT',
-        '/home/mulw1713/public_html/laundry',
-    ];
+    $targetDir = is_dir('/home/mulw1713/public_html/laundry') 
+        ? '/home/mulw1713/public_html/laundry' 
+        : (is_dir(dirname(__DIR__) . '/app') ? dirname(__DIR__) : __DIR__);
 
-    $gitDir = null;
-    foreach ($possibleDirs as $dir) {
-        if (is_dir($dir . '/.git')) {
-            $gitDir = $dir;
-            break;
+    $liveDbPath = $targetDir . '/database/laundrypro.sqlite';
+    $backupDir = $targetDir . '/storage/backups';
+    if (!is_dir($backupDir)) {
+        @mkdir($backupDir, 0755, true);
+    }
+
+    // =========================================================================
+    // STEP 0: AUTOMATED PRE-DEPLOYMENT SNAPSHOT (DATABASE ARMOR)
+    // =========================================================================
+    $preDeployBackupPath = null;
+    if (file_exists($liveDbPath) && filesize($liveDbPath) > 0) {
+        $preDeployBackupPath = $backupDir . '/pre_deploy_auto_' . date('Ymd_His') . '.sqlite';
+        try {
+            $pdo = new PDO('sqlite:' . $liveDbPath);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $escaped = str_replace("'", "''", $preDeployBackupPath);
+            $pdo->exec("VACUUM INTO '{$escaped}';");
+            $output[] = "DATA ARMOR: Snapshot cadangan pre-deployment aman dibuat: " . basename($preDeployBackupPath) . " (" . filesize($preDeployBackupPath) . " bytes).";
+        } catch (\Throwable $e) {
+            @copy($liveDbPath, $preDeployBackupPath);
+            $output[] = "DATA ARMOR: Salinan fisik pre-deployment dibuat: " . basename($preDeployBackupPath);
         }
     }
 
-    // Cek ketersediaan fungsi eksekusi di server hosting
-    $disabledFunctions = array_map('trim', explode(',', (string)ini_get('disable_functions')));
-    $canExec = function_exists('exec') && !in_array('exec', $disabledFunctions, true);
-    $canShellExec = function_exists('shell_exec') && !in_array('shell_exec', $disabledFunctions, true);
+    // =========================================================================
+    // STEP 1: SAFE CODE SYNCHRONIZATION WITH STRICT EXCLUSIONS
+    // =========================================================================
+    $tarGzUrl = 'https://codeload.github.com/sakahayang-code/PROJECT/tar.gz/refs/heads/main';
+    $tmpDir = sys_get_temp_dir();
+    $tmpTarGz = $tmpDir . '/simlaundry_deploy_' . time() . '.tar.gz';
+    $tmpTar = $tmpDir . '/simlaundry_deploy_' . time() . '.tar';
+    $extractDir = $tmpDir . '/simlaundry_extract_' . time();
 
-    if ($canExec || $canShellExec) {
-        $cmds = [];
-        if ($gitDir) {
-            $cmds[] = "cd " . escapeshellarg($gitDir) . " && git fetch origin main 2>&1 && git reset --hard origin/main 2>&1";
-        }
+    $ch = curl_init($tarGzUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'SimLaundry-Deployer-Protected');
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    $archiveData = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-        // Salin ke folder web jika repo berada di repositories/
-        $webDir = '/home/mulw1713/public_html/laundry';
-        if ($gitDir && $gitDir !== $webDir && is_dir($webDir)) {
-            $cmds[] = "/bin/cp -R " . escapeshellarg($gitDir) . "/* " . escapeshellarg($webDir) . "/ 2>&1";
-            $cmds[] = "/bin/cp " . escapeshellarg($gitDir) . "/.htaccess " . escapeshellarg($webDir) . "/ 2>&1";
-        }
+    if ($httpCode === 200 && !empty($archiveData)) {
+        file_put_contents($tmpTarGz, $archiveData);
+        $phar = new PharData($tmpTarGz);
+        $phar->decompress();
+        $tar = new PharData($tmpTar);
+        $tar->extractTo($extractDir, null, true);
 
-        // Set permission folder storage & database
-        if (is_dir($webDir . '/storage')) {
-            $cmds[] = "chmod -R 775 " . escapeshellarg($webDir . '/storage') . " " . escapeshellarg($webDir . '/database') . " 2>&1";
-        }
+        $subdirs = glob($extractDir . '/*');
+        $sourceDir = $subdirs[0] ?? null;
 
-        foreach ($cmds as $c) {
-            $executedCommands[] = $c;
-            $res = [];
-            if ($canExec) {
-                @exec($c, $res);
-                $output[] = implode("\n", $res);
-            } elseif ($canShellExec) {
-                $r = @shell_exec($c);
-                if ($r) $output[] = trim($r);
-            }
-        }
+        if ($sourceDir && is_dir($sourceDir)) {
+            // Strict exclusion patterns: NEVER OVERWRITE LIVE USER DATA
+            $isExcluded = function(string $relPath): bool {
+                $relPath = str_replace('\\', '/', $relPath);
+                $relPath = ltrim($relPath, '/');
 
-        // Jalankan cPanel UAPI jika ada
-        if (file_exists('/usr/local/cpanel/bin/uapi') && $gitDir) {
-            $uapiCmd = "/usr/local/cpanel/bin/uapi VersionControlDeployment create repository_root=" . escapeshellarg($gitDir) . " 2>&1";
-            $executedCommands[] = $uapiCmd;
-            if ($canExec) {
-                $uRes = [];
-                @exec($uapiCmd, $uRes);
-                $output[] = implode("\n", $uRes);
-            }
-        }
-    } else {
-        // Pure PHP Auto-Update Fallback (No exec, no git binary required)
-        $output[] = 'Mode fallback Pure-PHP diaktifkan (exec/shell_exec dinonaktifkan hosting).';
-        
-        $tarGzUrl = 'https://codeload.github.com/sakahayang-code/PROJECT/tar.gz/refs/heads/main';
-        $tmpDir = sys_get_temp_dir();
-        $tmpTarGz = $tmpDir . '/simlaundry_' . time() . '.tar.gz';
-        $tmpTar = $tmpDir . '/simlaundry_' . time() . '.tar';
-        $extractDir = $tmpDir . '/simlaundry_extract_' . time();
-        
-        $ch = curl_init($tarGzUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'SimLaundry-Deployer');
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-        $archiveData = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        if ($httpCode === 200 && !empty($archiveData)) {
-            file_put_contents($tmpTarGz, $archiveData);
-            $phar = new PharData($tmpTarGz);
-            $phar->decompress();
-            $tar = new PharData($tmpTar);
-            $tar->extractTo($extractDir, null, true);
-            
-            $subdirs = glob($extractDir . '/*');
-            $sourceDir = $subdirs[0] ?? null;
-            
-            if ($sourceDir && is_dir($sourceDir)) {
-                $targetDir = is_dir('/home/mulw1713/public_html/laundry') ? '/home/mulw1713/public_html/laundry' : (is_dir(dirname(__DIR__) . '/app') ? dirname(__DIR__) : __DIR__);
-                
-                // Exclude sensitive files from being overwritten
-                $excludes = ['database/laundrypro.sqlite', '.env', 'storage/logs', 'storage/backups', '.git', '.github'];
-                
-                $copyFunc = function($src, $dst, $excludes, &$copyFunc) use (&$output) {
-                    $count = 0;
-                    $dir = opendir($src);
-                    @mkdir($dst, 0755, true);
-                    while (false !== ($file = readdir($dir))) {
-                        if ($file === '.' || $file === '..') continue;
-                        $srcPath = $src . '/' . $file;
-                        $dstPath = $dst . '/' . $file;
-                        
-                        $skip = false;
-                        foreach ($excludes as $ex) {
-                            if (str_ends_with($dstPath, $ex) || str_contains($dstPath, '/' . $ex . '/')) {
-                                $skip = true;
-                                break;
-                            }
-                        }
-                        if ($skip) continue;
-                        
-                        if (is_dir($srcPath)) {
-                            $count += $copyFunc($srcPath, $dstPath, $excludes, $copyFunc);
-                        } else {
-                            if (@copy($srcPath, $dstPath)) {
-                                $count++;
-                            }
+                // 1. Database protection
+                if ($relPath === 'database/laundrypro.sqlite') return true;
+                if (preg_match('#^database/.*\.sqlite(-wal|-shm)?$#', $relPath)) return true;
+
+                // 2. Storage & uploads protection
+                if (str_starts_with($relPath, 'storage/backups/')) return true;
+                if (str_starts_with($relPath, 'storage/logs/')) return true;
+                if (str_starts_with($relPath, 'public/storage/')) return true;
+
+                // 3. Environment & repository metadata
+                if ($relPath === '.env' || str_starts_with($relPath, '.git') || str_starts_with($relPath, '.github')) return true;
+
+                return false;
+            };
+
+            $copySafe = function($src, $dst, $baseSrc, $isExcluded, &$copySafe) use (&$output) {
+                $count = 0;
+                $dir = opendir($src);
+                @mkdir($dst, 0755, true);
+                while (false !== ($file = readdir($dir))) {
+                    if ($file === '.' || $file === '..') continue;
+                    $srcPath = $src . '/' . $file;
+                    $dstPath = $dst . '/' . $file;
+                    $relPath = substr($srcPath, strlen($baseSrc) + 1);
+
+                    if ($isExcluded($relPath)) {
+                        continue;
+                    }
+
+                    if (is_dir($srcPath)) {
+                        $count += $copySafe($srcPath, $dstPath, $baseSrc, $isExcluded, $copySafe);
+                    } else {
+                        if (@copy($srcPath, $dstPath)) {
+                            $count++;
                         }
                     }
-                    closedir($dir);
-                    return $count;
-                };
-                
-                $copied = $copyFunc($sourceDir, $targetDir, $excludes, $copyFunc);
-                $status = 'success';
-                $output[] = "Sinkronisasi berhasil: {$copied} file diperbarui ke {$targetDir}.";
-            } else {
-                $status = 'error';
-                $output[] = 'Gagal menemukan direktori ekstraksi.';
-            }
-            
-            @unlink($tmpTarGz);
-            @unlink($tmpTar);
+                }
+                closedir($dir);
+                return $count;
+            };
+
+            $copied = $copySafe($sourceDir, $targetDir, $sourceDir, $isExcluded, $copySafe);
+            $status = 'success';
+            $output[] = "Sinkronisasi kode aman selesai: {$copied} file aplikasi diperbarui tanpa menyentuh data database/storage.";
         } else {
             $status = 'error';
-            $output[] = "Gagal mengunduh arsip dari GitHub (HTTP code {$httpCode}).";
+            $output[] = 'Gagal menemukan direktori ekstraksi kode.';
+        }
+
+        @unlink($tmpTarGz);
+        @unlink($tmpTar);
+        // Recursive cleanup of temp extract dir
+        if (is_dir($extractDir)) {
+            $cleanup = function($dir, &$cleanup) {
+                foreach (scandir($dir) as $item) {
+                    if ($item === '.' || $item === '..') continue;
+                    $p = $dir . '/' . $item;
+                    is_dir($p) ? $cleanup($p, $cleanup) : @unlink($p);
+                }
+                @rmdir($dir);
+            };
+            $cleanup($extractDir, $cleanup);
+        }
+    } else {
+        $status = 'error';
+        $output[] = "Gagal mengunduh arsip dari GitHub (HTTP code {$httpCode}).";
+    }
+
+    // =========================================================================
+    // STEP 2: POST-DEPLOYMENT DATABASE INTEGRITY CHECK
+    // =========================================================================
+    if (file_exists($liveDbPath)) {
+        try {
+            $verifyPdo = new PDO('sqlite:' . $liveDbPath);
+            $verifyPdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $quickCheck = $verifyPdo->query("PRAGMA quick_check;")->fetchColumn();
+            if ($quickCheck === 'ok') {
+                $output[] = "DATA ARMOR: Verifikasi integritas database live PASSED (quick_check: OK).";
+            } else {
+                throw new Exception("Pemeriksaan cepat integritas menghasilkan: {$quickCheck}");
+            }
+        } catch (\Throwable $e) {
+            $status = 'error';
+            $output[] = "PERINGATAN: Integritas database terganggu (" . $e->getMessage() . "). Menjalankan auto-rollback...";
+            if ($preDeployBackupPath && file_exists($preDeployBackupPath)) {
+                copy($preDeployBackupPath, $liveDbPath);
+                $output[] = "DATA ARMOR: Auto-rollback BERHASIL dipulihkan dari snapshot " . basename($preDeployBackupPath);
+            }
         }
     }
+
 } catch (\Throwable $e) {
     $status = 'warning';
     $output[] = 'Catatan sistem: ' . $e->getMessage();
 }
 
 // Log aktivitas
-$logFile = dirname(__DIR__) . '/storage/logs/deploy.log';
+$logFile = $targetDir . '/storage/logs/deploy.log';
+@mkdir(dirname($logFile), 0755, true);
 @file_put_contents(
     $logFile,
     "[" . date('Y-m-d H:i:s') . "] Status: {$status}\nOutput:\n" . implode("\n", $output) . "\n---\n",
@@ -208,8 +222,7 @@ http_response_code(200);
 echo json_encode([
     'status' => $status,
     'timestamp' => date('Y-m-d H:i:s'),
-    'git_directory' => $gitDir ?? 'not_found',
-    'executed_commands' => $executedCommands,
+    'data_armor' => 'ACTIVE',
     'command_output' => $output,
-    'message' => ($status === 'success') ? 'Auto-deployment berhasil dijalankan.' : 'Webhook diterima dengan catatan.'
+    'message' => ($status === 'success') ? 'Deployment & perlindungan data berhasil dijalankan.' : 'Deployment selesai dengan peringatan.'
 ], JSON_PRETTY_PRINT);

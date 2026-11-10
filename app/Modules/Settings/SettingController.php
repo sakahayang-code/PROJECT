@@ -135,12 +135,16 @@ class SettingController extends Controller
     {
         Permission::abortUnless('manage.backup');
 
+        $backupService = new \App\Services\BackupService();
+        // Check and trigger daily auto-backup if not created today
+        $backupService->autoBackupDaily();
+
         $backupDir = storage_path('backups');
         if (!is_dir($backupDir)) {
             mkdir($backupDir, 0777, true);
         }
 
-        $files = glob($backupDir . '/*.sqlite');
+        $files = glob($backupDir . '/*.{sqlite,tar.gz,zip}', GLOB_BRACE);
         rsort($files);
 
         $backups = [];
@@ -163,19 +167,62 @@ class SettingController extends Controller
     {
         Permission::abortUnless('manage.backup');
 
-        $backupDir = storage_path('backups');
-        if (!is_dir($backupDir)) {
-            mkdir($backupDir, 0777, true);
+        try {
+            $backupService = new \App\Services\BackupService();
+            $targetPath = $backupService->createSnapshot('manual');
+            $filename = basename($targetPath);
+
+            $this->logActivity('create_backup', 'database', null, "Membuat snapshot cadangan database {$filename}");
+            $this->back("Backup database berhasil dibuat: {$filename}", 'success');
+        } catch (\Throwable $e) {
+            $this->back("Gagal membuat backup: " . $e->getMessage(), 'error');
         }
+    }
 
-        $filename = 'laundrypro_backup_' . date('Ymd_His') . '.sqlite';
-        $targetPath = $backupDir . '/' . $filename;
+    public function downloadFullArchive(): void
+    {
+        Permission::abortUnless('manage.backup');
 
-        // Use safe SQLite VACUUM INTO for clean online snapshot
-        $this->db()->getConnection()->exec("VACUUM INTO '{$targetPath}';");
+        try {
+            $backupService = new \App\Services\BackupService();
+            $archivePath = $backupService->createFullArchive();
+            $filename = basename($archivePath);
 
-        $this->logActivity('create_backup', 'database', null, "Membuat snapshot cadangan database {$filename}");
-        $this->back("Backup database berhasil dibuat: {$filename}", 'success');
+            $mime = str_ends_with($filename, '.zip') ? 'application/zip' : 'application/gzip';
+            header("Content-Type: {$mime}");
+            header("Content-Disposition: attachment; filename=\"{$filename}\"");
+            header('Content-Length: ' . filesize($archivePath));
+            readfile($archivePath);
+            if (php_sapi_name() === 'cli' && defined('TESTING_MODE')) {
+                return;
+            }
+            exit;
+        } catch (\Throwable $e) {
+            $this->back("Gagal membuat arsip lengkap: " . $e->getMessage(), 'error');
+        }
+    }
+
+    public function exportJson(): void
+    {
+        Permission::abortUnless('manage.backup');
+
+        try {
+            $backupService = new \App\Services\BackupService();
+            $data = $backupService->exportJsonDump();
+            $filename = 'simlaundry_data_export_' . date('Ymd_His') . '.json';
+            $jsonStr = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+            header('Content-Type: application/json; charset=utf-8');
+            header("Content-Disposition: attachment; filename=\"{$filename}\"");
+            header('Content-Length: ' . strlen($jsonStr));
+            echo $jsonStr;
+            if (php_sapi_name() === 'cli' && defined('TESTING_MODE')) {
+                return;
+            }
+            exit;
+        } catch (\Throwable $e) {
+            $this->back("Gagal mengekspor data JSON: " . $e->getMessage(), 'error');
+        }
     }
 
     public function downloadBackup(string $filename): void
@@ -190,7 +237,11 @@ class SettingController extends Controller
             return;
         }
 
-        header('Content-Type: application/x-sqlite3');
+        $mime = 'application/x-sqlite3';
+        if (str_ends_with($cleanFile, '.zip')) $mime = 'application/zip';
+        if (str_ends_with($cleanFile, '.tar.gz')) $mime = 'application/gzip';
+
+        header("Content-Type: {$mime}");
         header("Content-Disposition: attachment; filename=\"{$cleanFile}\"");
         header('Content-Length: ' . filesize($filePath));
         readfile($filePath);
@@ -211,40 +262,15 @@ class SettingController extends Controller
 
         $tmpFile = $_FILES['backup_file']['tmp_name'];
 
-        // Validate SQLite schema integrity
         try {
-            $testPdo = new \PDO("sqlite:{$tmpFile}");
-            $testPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            $quickCheck = $testPdo->query("PRAGMA quick_check;")->fetchColumn();
-            if ($quickCheck !== 'ok') {
-                throw new \Exception("File database rusak (quick_check: {$quickCheck})");
-            }
+            $backupService = new \App\Services\BackupService();
+            $backupService->restoreSnapshot($tmpFile);
 
-            // Check essential tables exist
-            $tables = $testPdo->query("SELECT name FROM sqlite_master WHERE type='table'")->fetchAll(\PDO::FETCH_COLUMN);
-            $required = ['companies', 'branches', 'users', 'orders', 'accounts', 'journal_entries'];
-            foreach ($required as $req) {
-                if (!in_array($req, $tables, true)) {
-                    throw new \Exception("File backup tidak valid: Tabel {$req} tidak ditemukan.");
-                }
-            }
+            $this->logActivity('restore_backup', 'database', null, "Melakukan pemulihan database dari file cadangan yang diunggah.");
+            $this->back('Database berhasil dipulihkan (Restore Sukses). Snapshot cadangan sebelum restore telah disimpan dengan aman.', 'success');
         } catch (\Throwable $e) {
-            $this->back("Validasi integritas database gagal: " . $e->getMessage(), 'error');
-            return;
+            $this->back("Gagal memulihkan database: " . $e->getMessage(), 'error');
         }
-
-        // Target live database
-        $liveDb = base_path('database/laundrypro.sqlite');
-
-        // Make safety copy of current DB first
-        $safetyCopy = storage_path('backups/safety_before_restore_' . date('Ymd_His') . '.sqlite');
-        $this->db()->getConnection()->exec("VACUUM INTO '{$safetyCopy}';");
-
-        // Copy restored file over live DB
-        copy($tmpFile, $liveDb);
-
-        $this->logActivity('restore_backup', 'database', null, "Melakukan pemulihan database dari file cadangan yang diunggah.");
-        $this->back('Database berhasil dipulihkan (Restore Sukses). Snapshot cadangan sebelum restore telah disimpan dengan aman.', 'success');
     }
 
     public function logs(): void

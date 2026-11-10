@@ -36,13 +36,28 @@ class Migrator
 
         $dir = __DIR__ . '/migrations';
         $files = glob($dir . '/*.php');
-        sort($files);
-
+        $pending = [];
         foreach ($files as $file) {
             $filename = basename($file, '.php');
-            if (in_array($filename, $appliedList, true)) {
-                continue;
+            if (!in_array($filename, $appliedList, true)) {
+                $pending[] = $file;
             }
+        }
+
+        if (empty($pending)) {
+            return $applied;
+        }
+
+        // Automatic safety snapshot before altering schema/running migrations
+        try {
+            $backupPath = storage_path('backups/pre_migration_' . date('Ymd_His') . '.sqlite');
+            $this->db->backup($backupPath);
+        } catch (\Throwable $e) {
+            // Non-fatal, proceed with caution
+        }
+
+        foreach ($pending as $file) {
+            $filename = basename($file, '.php');
 
             $migrationClass = require $file;
             if (is_object($migrationClass) && method_exists($migrationClass, 'up')) {
@@ -75,6 +90,18 @@ class Migrator
             "SELECT migration FROM migrations WHERE batch = :batch ORDER BY id DESC",
             [':batch' => $maxBatch]
         );
+
+        if (empty($records)) {
+            return $rolledBack;
+        }
+
+        // Automatic safety snapshot before rolling back migrations
+        try {
+            $backupPath = storage_path('backups/pre_rollback_' . date('Ymd_His') . '.sqlite');
+            $this->db->backup($backupPath);
+        } catch (\Throwable $e) {
+            // Non-fatal, proceed with caution
+        }
 
         $dir = __DIR__ . '/migrations';
         foreach ($records as $row) {

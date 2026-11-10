@@ -9,6 +9,13 @@ class DashboardController extends Controller
 {
     public function index(): void
     {
+        // Daily automated database safety snapshot (runs once per day)
+        try {
+            (new \App\Services\BackupService())->autoBackupDaily();
+        } catch (\Throwable $e) {
+            // Non-blocking
+        }
+
         $activeBranchId = Auth::getActiveBranchId();
         $isOwnerOrSuper = Auth::hasGlobalAccess() && empty($activeBranchId);
 
