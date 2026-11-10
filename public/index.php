@@ -6,6 +6,11 @@
 
 declare(strict_types=1);
 
+// Initialize output buffering immediately to prevent any stray notices or whitespace from sending premature headers
+if (!ob_get_level()) {
+    ob_start();
+}
+
 require_once dirname(__DIR__) . '/app/autoload.php';
 
 use App\Core\Session;
@@ -28,7 +33,21 @@ try {
     $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
     $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     Router::dispatch($requestUri, $requestMethod);
+    if (ob_get_level() > 0) {
+        ob_end_flush();
+    }
 } catch (\Throwable $e) {
+    // Log exception to file
+    $logDir = dirname(__DIR__) . '/storage/logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+    @file_put_contents(
+        $logDir . '/app_error.log',
+        "[" . date('Y-m-d H:i:s') . "] " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n" . $e->getTraceAsString() . "\n---\n",
+        FILE_APPEND
+    );
+
     if ($config['debug'] ?? false) {
         if (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json')) {
             Response::json([

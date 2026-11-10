@@ -65,7 +65,7 @@ class MembershipController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ], 'id = :id', [':id' => $tierId]);
 
-        $this->back('Pengaturan level membership berhasil diperbarui.', 'success');
+        $this->redirect(url('/membership'), 'Pengaturan level membership berhasil diperbarui.', 'success');
     }
 
     public function adjustPoints(): void
@@ -115,7 +115,7 @@ class MembershipController extends Controller
             ]);
         });
 
-        $this->back("Poin pelanggan berhasil disesuaikan. Saldo baru: {$newPoints} poin.", 'success');
+        $this->redirect(url('/membership'), "Poin pelanggan berhasil disesuaikan. Saldo baru: {$newPoints} poin.", 'success');
     }
 
     public function vouchers(): void
@@ -184,7 +184,7 @@ class MembershipController extends Controller
             'updated_at' => $now,
         ]);
 
-        $this->back("Voucher {$code} berhasil dibuat.", 'success');
+        $this->redirect(url('/membership/vouchers'), "Voucher {$code} berhasil dibuat.", 'success');
     }
 
     public function toggleVoucher(): void
@@ -194,7 +194,7 @@ class MembershipController extends Controller
         $voucherId = (int)($_POST['voucher_id'] ?? 0);
         $voucher = $this->db()->fetch("SELECT * FROM vouchers WHERE id = :id", [':id' => $voucherId]);
         if (!$voucher) {
-            $this->back('Voucher tidak ditemukan.', 'error');
+            $this->back('Voucher tidak ditemukan.', 'error', '/membership/vouchers');
         }
 
         $newActive = $voucher['is_active'] ? 0 : 1;
@@ -204,6 +204,6 @@ class MembershipController extends Controller
         ], 'id = :id', [':id' => $voucherId]);
 
         $statusMsg = $newActive ? 'diaktifkan' : 'dinonaktifkan';
-        $this->back("Voucher {$voucher['code']} berhasil {$statusMsg}.", 'success');
+        $this->redirect(url('/membership/vouchers'), "Voucher {$voucher['code']} berhasil {$statusMsg}.", 'success');
     }
 }

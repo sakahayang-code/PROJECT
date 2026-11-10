@@ -381,7 +381,7 @@ class PortalController extends Controller
             ]);
         }
 
-        $this->back('Terima kasih atas ulasan dan rating kepuasan yang Anda berikan!', 'success');
+        $this->redirect(url('/portal/orders'), 'Terima kasih atas ulasan dan rating kepuasan yang Anda berikan!', 'success');
     }
 
     public function profile(): void
@@ -417,7 +417,7 @@ class PortalController extends Controller
         $address = trim($_POST['address'] ?? '');
 
         if (empty($name)) {
-            $this->back('Nama lengkap wajib diisi.', 'error');
+            $this->back('Nama lengkap wajib diisi.', 'error', '/portal/profile');
         }
 
         $this->db()->update('customers', [
@@ -427,6 +427,6 @@ class PortalController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ], 'id = :id', [':id' => $customerId]);
 
-        $this->back('Profil akun berhasil diperbarui.', 'success');
+        $this->redirect(url('/portal/profile'), 'Profil akun berhasil diperbarui.', 'success');
     }
 }

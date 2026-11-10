@@ -99,7 +99,7 @@ class WhatsAppController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ], 'id = :id', [':id' => $templateId]);
 
-        $this->back('Template pesan WhatsApp berhasil diperbarui.', 'success');
+        $this->redirect(url('/whatsapp/templates'), 'Template pesan WhatsApp berhasil diperbarui.', 'success');
     }
 
     public function saveSettings(): void
@@ -122,7 +122,7 @@ class WhatsAppController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ], 'company_id = :c', [':c' => $companyId]);
 
-        $this->back('Pengaturan gateway WhatsApp berhasil disimpan.', 'success');
+        $this->redirect(url('/whatsapp'), 'Pengaturan gateway WhatsApp berhasil disimpan.', 'success');
     }
 
     public function sendMessage(): void
@@ -134,7 +134,7 @@ class WhatsAppController extends Controller
         $message = trim($_POST['message'] ?? '');
 
         if (empty($phone) || empty($message)) {
-            $this->back('Nomor tujuan WhatsApp dan isi pesan wajib diisi.', 'error');
+            $this->back('Nomor tujuan WhatsApp dan isi pesan wajib diisi.', 'error', '/whatsapp');
         }
 
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
@@ -165,7 +165,7 @@ class WhatsAppController extends Controller
         $adapter = new WhatsAppAdapter();
         $adapter->processQueue(50);
 
-        $this->back("Pesan WhatsApp ke {$cleanPhone} berhasil dikirim.", 'success');
+        $this->redirect(url('/whatsapp'), "Pesan WhatsApp ke {$cleanPhone} berhasil dikirim.", 'success');
     }
 
     public function processQueue(): void
@@ -175,6 +175,6 @@ class WhatsAppController extends Controller
         $adapter = new WhatsAppAdapter();
         $count = $adapter->processQueue(20);
 
-        $this->back("Berhasil memproses {$count} pesan antrean WhatsApp.", 'success');
+        $this->redirect(url('/whatsapp'), "Berhasil memproses {$count} pesan antrean WhatsApp.", 'success');
     }
 }

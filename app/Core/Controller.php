@@ -53,19 +53,41 @@ abstract class Controller
         if ($flashMessage !== null) {
             Session::flash($flashType, $flashMessage);
         }
+        // Remember last redirect destination for idempotency / double-submission prevention
+        if (Session::has('_last_post_submission')) {
+            $last = Session::get('_last_post_submission');
+            if (is_array($last)) {
+                $last['redirect'] = $url;
+                Session::set('_last_post_submission', $last);
+            }
+        }
         Response::redirect($url);
     }
 
-    protected function back(?string $flashMessage = null, string $flashType = 'error'): void
+    protected function back(?string $flashMessage = null, string $flashType = 'error', ?string $fallback = null): void
     {
-        $referer = $_SERVER['HTTP_REFERER'] ?? url('/dashboard');
-        $this->redirect($referer, $flashMessage, $flashType);
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $currentUri = $_SERVER['REQUEST_URI'] ?? '';
+
+        $refererPath = parse_url($referer, PHP_URL_PATH) ?? '';
+        $currentPath = parse_url($currentUri, PHP_URL_PATH) ?? '';
+
+        // If referer is missing, or points to the current POST action URL, use safe fallback or dashboard
+        if (empty($referer) || $refererPath === $currentPath) {
+            $target = $fallback ? url($fallback) : url('/dashboard');
+        } else {
+            $target = $referer;
+        }
+
+        $this->redirect($target, $flashMessage, $flashType);
     }
 
     protected function validate(array $data, array $rules): array
     {
         $validator = Validator::make($data, $rules);
         if ($validator->fails()) {
+            // Clear last post submission so the user can immediately re-submit after fixing errors
+            Session::remove('_last_post_submission');
             if (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json')) {
                 Response::error('Validasi gagal', $validator->errors(), 422);
             }

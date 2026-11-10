@@ -136,7 +136,7 @@ class InventoryController extends Controller
             }
         });
 
-        $this->back("Barang inventaris {$name} ({$code}) berhasil ditambahkan.", 'success');
+        $this->redirect(url('/inventory'), "Barang inventaris {$name} ({$code}) berhasil ditambahkan.", 'success');
     }
 
     public function updateStock(): void
@@ -201,7 +201,7 @@ class InventoryController extends Controller
             ]);
         });
 
-        $this->back("Stok berhasil diperbarui. Stok akhir: {$stockAfter}.", 'success');
+        $this->redirect(url('/inventory'), "Stok berhasil diperbarui. Stok akhir: {$stockAfter}.", 'success');
     }
 
     public function movements(): void
@@ -379,7 +379,7 @@ class InventoryController extends Controller
             ]);
         });
 
-        $this->back("Stok opname {$opnameNo} berhasil disimpan. Selisih: {$difference}.", 'success');
+        $this->redirect(url('/inventory/opname'), "Stok opname {$opnameNo} berhasil disimpan. Selisih: {$difference}.", 'success');
     }
 
     public function transfers(): void
@@ -485,7 +485,7 @@ class InventoryController extends Controller
             ]);
         });
 
-        $this->back("Permintaan transfer {$trfNo} berhasil dibuat dan stok cabang asal telah dikurangi.", 'success');
+        $this->redirect(url('/inventory/transfers'), "Permintaan transfer {$trfNo} berhasil dibuat dan stok cabang asal telah dikurangi.", 'success');
     }
 
     public function receiveTransfer(): void
@@ -496,7 +496,7 @@ class InventoryController extends Controller
         $transfer = $this->db()->fetch("SELECT * FROM stock_transfers WHERE id = :id", [':id' => $transferId]);
 
         if (!$transfer || $transfer['status'] !== 'pending') {
-            $this->back('Data transfer tidak ditemukan atau sudah diproses.', 'error');
+            $this->back('Data transfer tidak ditemukan atau sudah diproses.', 'error', '/inventory/transfers');
         }
 
         $items = $this->db()->fetchAll("SELECT * FROM stock_transfer_items WHERE transfer_id = :id", [':id' => $transferId]);
@@ -553,7 +553,7 @@ class InventoryController extends Controller
             ], 'id = :id', [':id' => $transferId]);
         });
 
-        $this->back("Transfer {$transfer['transfer_no']} berhasil diterima dan stok cabang tujuan bertambah.", 'success');
+        $this->redirect(url('/inventory/transfers'), "Transfer {$transfer['transfer_no']} berhasil diterima dan stok cabang tujuan bertambah.", 'success');
     }
 
     public function suppliers(): void
@@ -607,6 +607,6 @@ class InventoryController extends Controller
             'updated_at' => $now,
         ]);
 
-        $this->back("Supplier {$code} berhasil ditambahkan.", 'success');
+        $this->redirect(url('/inventory/suppliers'), "Supplier {$code} berhasil ditambahkan.", 'success');
     }
 }

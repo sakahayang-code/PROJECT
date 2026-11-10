@@ -35,9 +35,42 @@ class CsrfMiddleware
             }
 
             Session::flash('error', 'Token keamanan CSRF tidak valid atau telah kedaluwarsa. Silakan coba lagi.');
-            Response::redirect($_SERVER['HTTP_REFERER'] ?? url('/dashboard'));
+            $referer = $_SERVER['HTTP_REFERER'] ?? '';
+            $refererPath = parse_url($referer, PHP_URL_PATH) ?? '';
+            $safeRedirect = (empty($referer) || $refererPath === $uri) ? url('/dashboard') : $referer;
+            Response::redirect($safeRedirect);
             return false;
         }
+
+        // =========================================================================
+        // IDEMPOTENCY & DOUBLE SUBMISSION / REPLAY PROTECTION
+        // =========================================================================
+        $postData = $_POST;
+        unset($postData['_csrf_token']); // Strip token so only actual form payload is hashed
+        $postSignature = md5($uri . '|' . serialize($postData));
+        $lastPost = Session::get('_last_post_submission');
+
+        if (is_array($lastPost) &&
+            ($lastPost['sig'] ?? '') === $postSignature &&
+            (time() - (int)($lastPost['time'] ?? 0)) < 4) {
+
+            // Duplicate post submission detected within 4 seconds (e.g. browser refresh or rapid double click)
+            $destination = $lastPost['redirect'] ?? ($_SERVER['HTTP_REFERER'] ?? url('/dashboard'));
+            $destinationPath = parse_url($destination, PHP_URL_PATH) ?? '';
+            if ($destinationPath === $uri) {
+                $destination = url('/dashboard');
+            }
+            Session::flash('info', 'Data formulir telah berhasil diproses sebelumnya.');
+            Response::redirect($destination);
+            return false;
+        }
+
+        // Record this submission attempt
+        Session::set('_last_post_submission', [
+            'sig' => $postSignature,
+            'time' => time(),
+            'redirect' => null,
+        ]);
 
         return true;
     }

@@ -73,7 +73,7 @@ class SettingController extends Controller
         }
 
         $this->logActivity('update_settings', 'companies', $companyId, "Memperbarui profil perusahaan {$name}");
-        $this->back('Profil perusahaan dan pengaturan sistem berhasil disimpan.', 'success');
+        $this->redirect(url('/settings'), 'Profil perusahaan dan pengaturan sistem berhasil disimpan.', 'success');
     }
 
     public function receipt(): void
@@ -128,7 +128,7 @@ class SettingController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ], 'company_id = :c', [':c' => $companyId]);
 
-        $this->back('Pengaturan cetak nota thermal berhasil disimpan.', 'success');
+        $this->redirect(url('/settings/receipt'), 'Pengaturan cetak nota thermal berhasil disimpan.', 'success');
     }
 
     public function backup(): void
@@ -173,9 +173,9 @@ class SettingController extends Controller
             $filename = basename($targetPath);
 
             $this->logActivity('create_backup', 'database', null, "Membuat snapshot cadangan database {$filename}");
-            $this->back("Backup database berhasil dibuat: {$filename}", 'success');
+            $this->redirect(url('/settings/backup'), "Backup database berhasil dibuat: {$filename}", 'success');
         } catch (\Throwable $e) {
-            $this->back("Gagal membuat backup: " . $e->getMessage(), 'error');
+            $this->back("Gagal membuat backup: " . $e->getMessage(), 'error', '/settings/backup');
         }
     }
 
@@ -267,9 +267,9 @@ class SettingController extends Controller
             $backupService->restoreSnapshot($tmpFile);
 
             $this->logActivity('restore_backup', 'database', null, "Melakukan pemulihan database dari file cadangan yang diunggah.");
-            $this->back('Database berhasil dipulihkan (Restore Sukses). Snapshot cadangan sebelum restore telah disimpan dengan aman.', 'success');
+            $this->redirect(url('/settings/backup'), 'Database berhasil dipulihkan (Restore Sukses). Snapshot cadangan sebelum restore telah disimpan dengan aman.', 'success');
         } catch (\Throwable $e) {
-            $this->back("Gagal memulihkan database: " . $e->getMessage(), 'error');
+            $this->back("Gagal memulihkan database: " . $e->getMessage(), 'error', '/settings/backup');
         }
     }
 

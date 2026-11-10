@@ -125,7 +125,7 @@ class MachineController extends Controller
             'updated_at' => $now,
         ]);
 
-        $this->back("Mesin {$name} ({$code}) berhasil ditambahkan.", 'success');
+        $this->redirect(url('/machines'), "Mesin {$name} ({$code}) berhasil ditambahkan.", 'success');
     }
 
     public function maintenance(): void
@@ -217,7 +217,7 @@ class MachineController extends Controller
             }
         });
 
-        $this->back("Jadwal pemeliharaan {$title} berhasil dibuat.", 'success');
+        $this->redirect(url('/machines/maintenance'), "Jadwal pemeliharaan {$title} berhasil dibuat.", 'success');
     }
 
     public function completeMaintenance(): void
@@ -231,7 +231,7 @@ class MachineController extends Controller
 
         $maint = $this->db()->fetch("SELECT * FROM machine_maintenance WHERE id = :id", [':id' => $maintId]);
         if (!$maint) {
-            $this->back('Data pemeliharaan tidak ditemukan.', 'error');
+            $this->back('Data pemeliharaan tidak ditemukan.', 'error', '/machines/maintenance');
         }
 
         $now = date('Y-m-d H:i:s');
@@ -260,7 +260,7 @@ class MachineController extends Controller
             ], 'id = :id', [':id' => $maint['machine_id']]);
         });
 
-        $this->back('Pemeliharaan mesin selesai dan kondisi mesin kembali siap pakai (Ready).', 'success');
+        $this->redirect(url('/machines/maintenance'), 'Pemeliharaan mesin selesai dan kondisi mesin kembali siap pakai (Ready).', 'success');
     }
 
     public function reportFault(): void
@@ -270,12 +270,12 @@ class MachineController extends Controller
         $severity = in_array($_POST['severity'], ['low', 'medium', 'high', 'critical']) ? $_POST['severity'] : 'medium';
 
         if ($machineId <= 0 || empty($desc)) {
-            $this->back('Pilih mesin dan jelaskan kendala kerusakan.', 'error');
+            $this->back('Pilih mesin dan jelaskan kendala kerusakan.', 'error', '/machines');
         }
 
         $machine = $this->db()->fetch("SELECT * FROM machines WHERE id = :id", [':id' => $machineId]);
         if (!$machine) {
-            $this->back('Mesin tidak ditemukan.', 'error');
+            $this->back('Mesin tidak ditemukan.', 'error', '/machines');
         }
 
         $now = date('Y-m-d H:i:s');
@@ -297,6 +297,6 @@ class MachineController extends Controller
             ], 'id = :id', [':id' => $machineId]);
         });
 
-        $this->back("Laporan kerusakan mesin telah dicatat.", 'success');
+        $this->redirect(url('/machines'), "Laporan kerusakan mesin telah dicatat.", 'success');
     }
 }

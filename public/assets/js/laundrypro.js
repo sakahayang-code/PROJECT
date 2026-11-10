@@ -13,6 +13,40 @@ window.LaundryPro = {
         this.initTooltips();
         this.initAutoDismissAlerts();
         this.initPwaInstall();
+        this.initFormSubmitProtection();
+    },
+
+    initFormSubmitProtection() {
+        document.addEventListener('submit', (e) => {
+            const form = e.target;
+            if (!form || form.tagName !== 'FORM') return;
+
+            // Only guard POST / standard data mutation forms
+            const method = (form.getAttribute('method') || 'GET').toUpperCase();
+            if (method !== 'POST') return;
+
+            // Prevent double submission if already in progress
+            if (form.dataset.submitting === 'true') {
+                e.preventDefault();
+                return;
+            }
+
+            form.dataset.submitting = 'true';
+            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn) {
+                const originalHtml = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                if (submitBtn.tagName === 'BUTTON') {
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Menyimpan...';
+                }
+                // Safety timeout: re-enable after 6 seconds in case navigation was cancelled
+                setTimeout(() => {
+                    form.dataset.submitting = 'false';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHtml;
+                }, 6000);
+            }
+        }, true);
     },
 
     initPwaInstall() {

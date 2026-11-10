@@ -173,7 +173,7 @@ class DeliveryController extends Controller
             }
         });
 
-        $this->back('Permintaan pickup/delivery berhasil dibuat.', 'success');
+        $this->redirect(url('/delivery'), 'Permintaan pickup/delivery berhasil dibuat.', 'success');
     }
 
     public function assignCourier(): void
@@ -225,7 +225,7 @@ class DeliveryController extends Controller
             ]);
         });
 
-        $this->back("Tugas berhasil ditugaskan ke kurir {$courier['name']}.", 'success');
+        $this->redirect(url('/delivery'), "Tugas berhasil ditugaskan ke kurir {$courier['name']}.", 'success');
     }
 
     public function updateStatus(): void
@@ -277,7 +277,7 @@ class DeliveryController extends Controller
             }
         });
 
-        $this->back("Status pengiriman berhasil diperbarui menjadi {$newStatus}.", 'success');
+        $this->back("Status pengiriman berhasil diperbarui menjadi {$newStatus}.", 'success', '/delivery');
     }
 
     public function uploadProof(): void
@@ -349,7 +349,7 @@ class DeliveryController extends Controller
             }
         });
 
-        $this->back("Bukti serah terima berhasil disimpan. Status: {$targetStatus}.", 'success');
+        $this->back("Bukti serah terima berhasil disimpan. Status: {$targetStatus}.", 'success', '/delivery');
     }
 
     public function tasks(): void
