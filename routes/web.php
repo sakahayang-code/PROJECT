@@ -41,10 +41,16 @@ Router::group(['middleware' => [AuthMiddleware::class]], function() {
     Router::post('/branches', [BranchController::class, 'store'], [CsrfMiddleware::class]);
     Router::post('/branches/{id}', [BranchController::class, 'update'], [CsrfMiddleware::class]);
 
-    // Users Management
+    // Users & Accounts Management (Kelola Akun)
     Router::get('/users', [\App\Modules\Users\UserController::class, 'index']);
+    Router::get('/accounts', [\App\Modules\Users\UserController::class, 'index']);
     Router::post('/users', [\App\Modules\Users\UserController::class, 'store'], [CsrfMiddleware::class]);
     Router::post('/users/{id}', [\App\Modules\Users\UserController::class, 'update'], [CsrfMiddleware::class]);
+    Router::post('/users/{id}/delete', [\App\Modules\Users\UserController::class, 'delete'], [CsrfMiddleware::class]);
+    Router::post('/users/{id}/reset-password', [\App\Modules\Users\UserController::class, 'resetPassword'], [CsrfMiddleware::class]);
+    Router::post('/accounts/customers/create', [\App\Modules\Users\UserController::class, 'createCustomerAccount'], [CsrfMiddleware::class]);
+    Router::post('/accounts/customers/{id}/reset-password', [\App\Modules\Users\UserController::class, 'resetCustomerPassword'], [CsrfMiddleware::class]);
+    Router::post('/accounts/customers/{id}/toggle', [\App\Modules\Users\UserController::class, 'toggleCustomerAccount'], [CsrfMiddleware::class]);
 
     // Roles & RBAC Matrix
     Router::get('/roles', [\App\Modules\Users\RoleController::class, 'index']);

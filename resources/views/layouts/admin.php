@@ -322,11 +322,13 @@
                 <i class="bi bi-person-badge"></i>
                 <span>Karyawan & Shift</span>
             </a>
-            <?php if (\App\Core\Auth::hasRole('super_admin')): ?>
-            <a href="<?= url('/users') ?>" class="sidebar-link <?= ($activeMenu ?? '') === 'users' ? 'active' : '' ?>">
-                <i class="bi bi-shield-lock-fill"></i>
-                <span>Pengguna & Hak Akses</span>
+            <?php if (\App\Core\Auth::hasRole(['super_admin', 'owner', 'manager'])): ?>
+            <a href="<?= url('/accounts') ?>" class="sidebar-link <?= in_array($activeMenu ?? '', ['users', 'accounts']) ? 'active' : '' ?>">
+                <i class="bi bi-people-gear"></i>
+                <span>Kelola Akun</span>
             </a>
+            <?php endif; ?>
+            <?php if (\App\Core\Auth::hasRole(['super_admin', 'owner'])): ?>
             <a href="<?= url('/settings') ?>" class="sidebar-link <?= ($activeMenu ?? '') === 'settings' ? 'active' : '' ?>">
                 <i class="bi bi-sliders"></i>
                 <span>Konfigurasi & Backup</span>
@@ -419,6 +421,9 @@
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                         <li><h6 class="dropdown-header"><?= e($currentUser['role_name'] ?? 'Role') ?></h6></li>
                         <li><a class="dropdown-item" href="<?= url('/profile') ?>"><i class="bi bi-person me-2"></i> Profil Akun</a></li>
+                        <?php if (\App\Core\Auth::hasRole(['super_admin', 'owner', 'manager'])): ?>
+                        <li><a class="dropdown-item" href="<?= url('/accounts') ?>"><i class="bi bi-people-gear me-2"></i> Kelola Akun</a></li>
+                        <?php endif; ?>
                         <li><a class="dropdown-item" href="<?= url('/portal') ?>" target="_blank"><i class="bi bi-box-arrow-up-right me-2"></i> Portal Pelanggan</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
@@ -644,6 +649,45 @@
                 </div>
                 <span class="m3-app-label">Profil Saya</span>
             </a>
+
+            <?php if (\App\Core\Auth::hasRole(['super_admin', 'owner', 'manager'])): ?>
+            <a href="<?= url('/accounts') ?>" class="m3-app-item">
+                <div class="m3-app-icon text-white" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);">
+                    <i class="bi bi-people-gear"></i>
+                </div>
+                <span class="m3-app-label">Kelola Akun</span>
+            </a>
+
+            <a href="<?= url('/services') ?>" class="m3-app-item">
+                <div class="m3-app-icon text-white" style="background: #0284C7;">
+                    <i class="bi bi-tags-fill"></i>
+                </div>
+                <span class="m3-app-label">Layanan</span>
+            </a>
+
+            <a href="<?= url('/branches') ?>" class="m3-app-item">
+                <div class="m3-app-icon text-white" style="background: #0D9488;">
+                    <i class="bi bi-shop"></i>
+                </div>
+                <span class="m3-app-label">Cabang</span>
+            </a>
+
+            <a href="<?= url('/employees') ?>" class="m3-app-item">
+                <div class="m3-app-icon text-white" style="background: #475569;">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <span class="m3-app-label">Karyawan</span>
+            </a>
+            <?php endif; ?>
+
+            <?php if (\App\Core\Auth::hasRole(['super_admin', 'owner'])): ?>
+            <a href="<?= url('/settings') ?>" class="m3-app-item">
+                <div class="m3-app-icon bg-secondary text-white">
+                    <i class="bi bi-sliders"></i>
+                </div>
+                <span class="m3-app-label">Pengaturan</span>
+            </a>
+            <?php endif; ?>
 
             <button type="button" class="m3-app-item border-0 bg-transparent" onclick="SimLaundry.promptInstall()">
                 <div class="m3-app-icon bg-success text-white">
