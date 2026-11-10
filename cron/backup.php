@@ -12,7 +12,11 @@ declare(strict_types=1);
  *   https://multimediatama.com/laundry/cron/backup.php?token=laundrypro_secret_deploy_2026
  */
 
-require_once dirname(__DIR__) . '/app/autoload.php';
+if (file_exists(dirname(__DIR__) . '/app/autoload.php')) {
+    require_once dirname(__DIR__) . '/app/autoload.php';
+} else {
+    require_once dirname(__DIR__, 2) . '/app/autoload.php';
+}
 
 $secretToken = 'laundrypro_secret_deploy_2026';
 
